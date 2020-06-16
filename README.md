@@ -1,0 +1,2 @@
+# ansible_install_k8s
+使用ansible通过二进制形式安装k8s
