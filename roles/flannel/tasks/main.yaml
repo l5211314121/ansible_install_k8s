@@ -20,7 +20,7 @@
 
 - name: "Unarchive Flanneld Tarball"
   unarchive:
-    src: "{{package_root_dir}}/{{flannel_package}}"
+    src: "{{package_root_dir}}/flannel-v{{flannel_version}}-linux-amd64.tar.gz"
     dest: "{{package_root_dir}}/flannel"
   tags: install_flannel
 

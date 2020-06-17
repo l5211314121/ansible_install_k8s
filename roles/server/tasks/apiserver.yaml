@@ -105,3 +105,4 @@
     chdir: "{{workdir}}/kubernetes/cfg"
   run_once: true
   tags: install_server, install_apiserver
+  ignore_errors: true

@@ -52,15 +52,17 @@
     state: present
   tags: init
 
-- name: Start Docker
-  systemd:
-    name: docker
-    enabled: true
-    state: started
-  tags: init, start_docker
-
 - name: Stop Docker
   systemd:
     name: docker
     state: stopped
   tags: stop_docker
+
+- name: Start Docker
+  systemd:
+    name: docker
+    enabled: true
+    state: restarted
+    daemon-reload: true
+  tags: init, start_docker
+
