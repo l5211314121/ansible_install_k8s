@@ -1,0 +1,8 @@
+- name: "Install API Server"
+  include: apiserver.yaml
+
+- name: "Install Controller Manager"
+  include: manager.yaml
+
+- name: "Install Controller Manager"
+  include: scheduler.yaml

@@ -1,0 +1,19 @@
+- name: "Distribute Kube-proxy Environment File"
+  template:
+    src: kube-proxy.j2
+    dest: "{{workdir}}/kubernetes/cfg/kube-proxy"
+  tags: install_node, install_kube_proxy
+
+- name: "Distribute Start Script"
+  template:
+    src: kube-proxy.service.j2
+    dest: /usr/lib/systemd/system/kube-proxy.service
+  tags: install_node, install_kube_proxy
+
+- name: "Start kube-proxy"
+  systemd:
+    name: kube-proxy
+    enabled: true
+    daemon_reload: true
+    state: restarted
+  tags: install_node, install_kube_proxy

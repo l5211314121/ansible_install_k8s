@@ -1,0 +1,12 @@
+- name: "Distribute admin CSR File"
+  copy:
+    src: "kubernetes/admin-csr.json"
+    dest: "{{ cert_root_dir }}/kubernetes/admin/"
+  tags: certs, admin_certs
+
+- name: "Generate admin Certs File and Key File"
+  shell:
+    cfssl gencert -ca=../ca.pem -ca-key=../ca-key.pem -config=../ca-config.json -profile=kubernetes admin-csr.json | cfssljson -bare admin
+  args:
+    chdir: "{{ cert_root_dir }}/kubernetes/admin/"
+  tags: certs, admin_certs

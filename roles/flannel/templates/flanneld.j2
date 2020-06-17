@@ -1,0 +1,4 @@
+FLANNEL_OPTIONS="--etcd-endpoints={% for host in groups['etcd'] %}https://{{ host }}:2379{% if not loop.last %},{% endif %}{% endfor %} \
+-etcd-cafile={{workdir}}/etcd/ssl/ca.pem \
+-etcd-certfile={{workdir}}/etcd/ssl/etcd.pem \
+-etcd-keyfile={{workdir}}/etcd/ssl/etcd-key.pem"

@@ -1,0 +1,28 @@
+- name: "Distrubute Server CA Config File and CSR File"
+  copy:
+    src: "files/{{ item }}"
+    dest: "{{ cert_root_dir }}/kubernetes/"
+  with_items:
+    - "kubernetes/ca-config.json"
+    - "kubernetes/ca-csr.json"
+  tags: certs, server_ca_certs
+
+- name: "Generate Apiserver CA File and Key File"
+  shell:
+    cfssl gencert -initca ca-csr.json | cfssljson -bare ca .
+  args:
+    chdir: "{{ cert_root_dir }}/kubernetes/"
+  tags: certs, server_ca_certs
+
+- name: "Distribute Apiserver CSR File"
+  template:
+    src: apiserver-csr.json.j2
+    dest: "{{ cert_root_dir }}/kubernetes/kube-apiserver/apiserver-csr.json"
+  tags: certs, apiserver_certs
+
+- name: "Generate Apiserver Certs File and Key File"
+  shell:
+    cfssl gencert -ca=../ca.pem -ca-key=../ca-key.pem -config=../ca-config.json -profile=kubernetes apiserver-csr.json | cfssljson -bare apiserver
+  args:
+    chdir: "{{ cert_root_dir }}/kubernetes/kube-apiserver/"
+  tags: certs, apiserver_certs

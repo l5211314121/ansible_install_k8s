@@ -1,0 +1,90 @@
+- name: "DownLoad Kubernetes Tarball"
+  get_url:
+    url: "https://dl.k8s.io/{{kubernetes_version}}/kubernetes-server-linux-amd64.tar.gz"
+    dest: "{{package_root_dir}}"
+  tags: install_node
+  when: env != 'local'
+
+- name: "Distribute Kubernetes Tarball"
+  copy:
+    src: "kubernetes-server-linux-amd64.tar.gz"
+    dest: "{{package_root_dir}}"
+  tags: install_node
+  when: env == 'local'
+
+- name: "Unarchive Kubernetes Tarball"
+  unarchive:
+    src: "{{package_root_dir}}/kubernetes-server-linux-amd64.tar.gz"
+    dest: "{{package_root_dir}}"
+    remote_src: true
+    keep_newer: true
+  tags: install_node
+
+- name: "Distribute Bin File"
+  copy:
+    src: "{{package_root_dir}}/kubernetes/server/bin/{{item}}"
+    dest: /usr/local/bin
+    mode: 0755
+  with_items: ["kubectl", "kube-proxy", "kubelet"]
+  tags: install_node
+
+- name: "Distrubute CA File"
+  copy:
+    src: "{{cert_root_dir}}/kubernetes/{{item}}"
+    dest: "{{workdir}}/kubernetes/ssl/"
+    force: true
+  with_items: ["ca.pem", "ca-key.pem"]
+  tags: install_node
+
+- name: "Distrubute Kube-proxy Certs"
+  copy:
+    src: "{{cert_root_dir}}/kubernetes/kube-proxy/{{item}}"
+    dest: "{{workdir}}/kubernetes/ssl/kube-proxy/"
+  with_items: ["kube-proxy.pem", "kube-proxy-key.pem"]
+  tags: install_node
+
+- name: "Generate bootstrap.kubeconfig"
+  shell: |
+    kubectl config set-cluster kubernetes --certificate-authority=../ssl/ca.pem --embed-certs=true --server=https://{{apiserver_master_addr}}:6443 --kubeconfig=bootstrap.kubeconfig
+    kubectl config set-credentials kubelet-bootstrap --token={{apiserver_token}} --kubeconfig=bootstrap.kubeconfig
+    kubectl  config set-context default --cluster=kubernetes --user=kubelet-bootstrap --kubeconfig=bootstrap.kubeconfig
+    kubectl  config use-context default --kubeconfig=bootstrap.kubeconfig
+  args:
+    chdir: "{{workdir}}/kubernetes/cfg/"
+  tags: install_node
+
+- name: "Generate kube-proxy.kubeconfig"
+  shell: |
+    kubectl config set-cluster kubernetes --certificate-authority=../ssl/ca.pem --embed-certs=true --server=https://{{apiserver_master_addr}}:6443 --kubeconfig=kube-proxy.kubeconfig
+    kubectl config set-credentials kube-proxy --client-certificate=../ssl/kube-proxy/kube-proxy.pem --client-key=../ssl/kube-proxy/kube-proxy-key.pem  --embed-certs=true --kubeconfig=kube-proxy.kubeconfig
+    kubectl config set-context default --cluster=kubernetes --user=kube-proxy --kubeconfig=kube-proxy.kubeconfig
+    kubectl config use-context default --kubeconfig=kube-proxy.kubeconfig
+  args:
+    chdir: "{{workdir}}/kubernetes/cfg/"
+  tags: install_node
+
+- name: "Distribute Kubelet Environment File"
+  template:
+    src: kubelet.j2
+    dest: "{{workdir}}/kubernetes/cfg/kubelet"
+  tags: install_node, install_kubelet
+
+- name: "Distribute Kubelet Configuration File"
+  template:
+    src: kubelet.config.j2
+    dest: "{{workdir}}/kubernetes/cfg/kubelet.config"
+  tags: install_node, install_kubelet
+
+- name: "Distribute Start Script"
+  template:
+    src: kubelet.service.j2
+    dest: /usr/lib/systemd/system/kubelet.service
+  tags: install_node, install_kubelet
+
+- name: "Start Kubelet"
+  systemd:
+    name: kubelet
+    enabled: true
+    daemon_reload: true
+    state: restarted
+  tags: install_node, install_kubelet

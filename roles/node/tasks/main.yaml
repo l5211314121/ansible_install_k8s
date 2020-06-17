@@ -1,0 +1,5 @@
+- name: "Install Kubelet"
+  include: kubelet.yaml
+
+- name: "Install Proxy"
+  include: proxy.yaml

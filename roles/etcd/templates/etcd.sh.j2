@@ -1,0 +1,3 @@
+#!/bin/bash
+alias etcdctl2="ETCDCTL_API=2 etcdctl --ca-file={{workdir}}/etcd/ssl/ca.pem --cert-file={{workdir}}/etcd/ssl/etcd.pem --key-file={{workdir}}/etcd/ssl/etcd-key.pem --endpoints={% for host in groups['etcd'] %}https://{{ host }}:2379{% if not loop.last %},{% endif %}{% endfor %}"
+alias etcdctl3="ETCDCTL_API=3 etcdctl --cacert={{workdir}}/etcd/ssl/ca.pem --cert={{workdir}}/etcd/ssl/etcd.pem --key={{workdir}}/etcd/ssl/etcd-key.pem --endpoints={% for host in groups['etcd'] %}https://{{ host }}:2379{% if not loop.last %},{% endif %}{% endfor %}"

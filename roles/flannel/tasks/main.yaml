@@ -1,0 +1,110 @@
+- name: "Download Flanneld"
+  get_url:
+    url: "https://github.com/coreos/flannel/releases/download/{{flannel_version}}/flanneld-amd64"
+    dest: "{{package_root_dir}}"
+  tags: install_flannel
+  when: env != 'local'
+
+- name: "Distribute Flanneld Tarball"
+  copy:
+    src: "flannel-v{{flannel_version}}-linux-amd64.tar.gz"
+    dest: "{{package_root_dir}}"
+  tags: install_flannel
+  when: env == 'local'
+
+- name: "Make Flannel Package Directory"
+  file:
+    name: "{{package_root_dir}}/flannel"
+    state: directory
+  tags: install_flannel
+
+- name: "Unarchive Flanneld Tarball"
+  unarchive:
+    src: "{{package_root_dir}}/{{flannel_package}}"
+    dest: "{{package_root_dir}}/flannel"
+  tags: install_flannel
+
+- name: "Copy Flanneld To Path"
+  copy:
+    src: "{{ package_root_dir }}/flannel/{{ item }}"
+    dest: "/usr/local/bin/"
+    mode: 0755
+    remote_src: true
+  with_items:
+    - flanneld
+    - mk-docker-opts.sh
+  tags: install_flannel
+
+- name: "Copy Flannel Configuration File"
+  template:
+    src: flanneld.j2
+    dest: "{{workdir}}/kubernetes/cfg/flanneld"
+  tags: install_flannel
+
+- name: "IF Distrubute ETCD Certs"
+  shell:
+    "ls {{workdir}}/etcd/ssl/ | grep ca"
+  register: if_distribute_etcd_certs
+  tags: install_flannel
+  ignore_errors: true
+
+- name: "Distrubute ETCD Certs"
+  copy:
+    src: "{{cert_root_dir}}/etcd/{{item}}"
+    dest: "{{workdir}}/etcd/ssl/"
+    force: true
+  with_items: ["ca.pem", "ca-key.pem", "etcd.pem", "etcd-key.pem"]
+  tags: install_flannel
+  when: if_distribute_etcd_certs is failed
+
+- name: "Copy Flannel Systemd Script"
+  template:
+    src: flanneld.service.j2
+    dest: /usr/lib/systemd/system/flanneld.service
+  tags: install_flannel
+
+- name: "Set Flanneld Network Info - Step-1"
+  template:
+    src: network.sh.j2
+    dest: "{{package_root_dir}}/network.sh"
+    mode: 0755
+  tags: install_etcd, set_network
+
+- name: "Set Flanneld Network Info - Step-2"
+  shell:
+    /bin/bash network.sh
+  args:
+    chdir: "{{package_root_dir}}"
+  tags: install_etcd, set_network
+  run_once: true
+
+- name: "Judge Change Docker Script"
+  shell:
+    grep EnvironmentFile /usr/lib/systemd/system/docker.service
+  ignore_errors: true
+  register: change_docker_file
+  tags: install_flannel, change_docker_script
+
+- name: "Change Docker Start Command"
+  lineinfile:
+    path: /usr/lib/systemd/system/docker.service
+    regexp: '^ExecStart'
+    line: "EnvironmentFile=/run/flannel/subnet.env\nExecStart=/usr/bin/dockerd -H fd:// --containerd=/run/containerd/containerd.sock $DOCKER_NETWORK_OPTIONS"
+  tags: install_flannel, change_docker_script
+  when: change_docker_file is failed
+
+- name: "Restart Flannel"
+  systemd:
+    daemon-reload: true
+    name: flanneld
+    state: restarted
+    enabled: true
+  tags: install_flannel, restart_flanneld
+
+- name: "Restart Docker"
+  systemd:
+    daemon-reload: true
+    name: docker
+    state: restarted
+    enabled: true
+  tags: install_flannel, restart_docker

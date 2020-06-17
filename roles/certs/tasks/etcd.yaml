@@ -1,0 +1,37 @@
+- name: "Make Certs Directory"
+  file:
+    name: "{{ cert_root_dir }}/{{ item }}"
+    state: directory
+    recurse: true
+  with_items:
+    - etcd
+    - kubernetes/admin
+    - kubernetes/kube-apiserver
+    - kubernetes/kube-proxy
+    - kubernetes/kube-scheduler
+    - kubernetes/kube-controller-manager
+  tags: certs
+
+- name: "Copy ETCD CA Config File and CSR File"
+  copy:
+    src: "files/{{ item }}"
+    dest: "{{ cert_root_dir }}/etcd/"
+  with_items:
+    - "etcd/ca-config.json"
+    - "etcd/ca-csr.json"
+    - "etcd/etcd-csr.json"
+  tags: certs, etcd_certs
+
+- name: "Generate ETCD CA File and Key File"
+  shell:
+    cfssl gencert -initca ca-csr.json | cfssljson -bare ca .
+  args:
+    chdir: "{{ cert_root_dir }}/etcd/"
+  tags: certs, etcd_certs
+
+- name: "Generate ETCD Certs File and Key File"
+  shell:
+    cfssl gencert -ca=ca.pem -ca-key=ca-key.pem -config=ca-config.json -profile=etcd etcd-csr.json | cfssljson -bare etcd
+  args:
+    chdir: "{{ cert_root_dir }}/etcd/"
+  tags: certs, etcd_certs

@@ -1,0 +1,11 @@
+- name: "Etcd Certs"
+  include: etcd.yaml
+
+- name: "Apiserver Certs"
+  include: apiserver.yaml
+
+- name: "Admin Certs"
+  include: admin.yaml
+
+- name: "Kube-proxy Certs"
+  include: kube-proxy.yaml

@@ -1,0 +1,67 @@
+- name: "DownLoad ETCD Tarball"
+  get_url:
+    url: "https://github.com/etcd-io/etcd/releases/download/v{{etcd_version}}/etcd-v{{etcd_version}}-linux-amd64.tar.gzz"
+    dest: "{{package_root_dir}}"
+  tags: install_etcd
+  when: env != 'local'
+
+- name: "Distribute ETCD Tarball"
+  copy:
+    src: "etcd-v{{ etcd_version }}-linux-amd64.tar.gz"
+    dest: "{{package_root_dir}}"
+  tags: install_etcd
+  when: env == 'local'
+
+- name: "Unarchive ETCD Tarball"
+  unarchive:
+    src: "{{ package_root_dir }}/etcd-v{{ etcd_version }}-linux-amd64.tar.gz"
+    dest: "{{ package_root_dir }}"
+    remote_src: true
+  tags: install_etcd
+
+- name: "Copy ETCD Bin File To PATH"
+  copy:
+    src: "{{ package_root_dir }}/etcd-v{{etcd_version}}-linux-amd64/{{ item }}"
+    dest: "/usr/local/bin"
+    mode: 0755
+    remote_src:
+  with_items:
+    - etcd
+    - etcdctl
+  tags: install_etcd
+
+- name: "Distribute ETCD Certs"
+  copy:
+    src: "{{cert_root_dir}}/etcd/{{item}}"
+    dest: "{{workdir}}/etcd/ssl/"
+    force: true
+  with_items: ["ca.pem", "ca-key.pem", "etcd.pem", "etcd-key.pem"]
+  tags: install_etcd
+
+- name: "Copy ETCD Configuration Files"
+  template:
+    src: etcd.j2
+    dest: "{{workdir}}/etcd/cfg/etcd"
+    force: true
+  tags: install_etcd
+
+- name: "Write ETCD Command to Profile"
+  template:
+    src: etcd.sh.j2
+    dest: /etc/profile.d/etcd.sh
+    mode: 0755
+  tags: install_etcd
+
+- name: "Copy ETCD Systemd File"
+  template:
+    src: etcd.service.j2
+    dest: /usr/lib/systemd/system/etcd.service
+  tags: install_etcd
+
+- name: "Start ETCD"
+  systemd:
+    name: etcd
+    state: restarted
+    enabled: true
+    daemon-reload: true
+  tags: install_etcd, restart_etcd

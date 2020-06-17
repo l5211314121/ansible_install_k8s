@@ -1,0 +1,24 @@
+KUBE_APISERVER_OPTS="--logtostderr=false \
+--v=4 \
+--etcd-servers={% for host in groups['etcd'] %}https://{{ host }}:2379{% if not loop.last %},{% endif %}{% endfor %} \
+--bind-address={{ansible_default_ipv4.address}} \
+--secure-port=6443 \
+--advertise-address={{ansible_default_ipv4.address}} \
+--allow-privileged=true \
+--service-cluster-ip-range={{apiserver_network_prefix}} \
+--authorization-mode=RBAC,Node \
+--kubelet-https=true \
+--enable-bootstrap-token-auth \
+--token-auth-file=/opt/kubernetes/cfg/token.csv \
+--service-node-port-range={{service_port_range}} \
+--tls-cert-file={{workdir}}/kubernetes/ssl/kube-apiserver/apiserver.pem \
+--tls-private-key-file={{workdir}}/kubernetes/ssl/kube-apiserver/apiserver-key.pem \
+--client-ca-file={{workdir}}/kubernetes/ssl/ca.pem \
+--service-account-key-file={{workdir}}/kubernetes/ssl/ca-key.pem \
+--etcd-cafile={{workdir}}/etcd/ssl/ca.pem \
+--etcd-certfile={{workdir}}/etcd/ssl/etcd.pem \
+--etcd-keyfile={{workdir}}/etcd/ssl/etcd-key.pem \
+--log-dir={{workdir}}/kubernetes/logs \
+--kubelet-client-certificate={{workdir}}/kubernetes/ssl/kube-apiserver/apiserver.pem \
+--kubelet-client-key={{workdir}}/kubernetes/ssl/kube-apiserver/apiserver-key.pem \
+--log-file={{workdir}}/kubernetes/api-server.log"

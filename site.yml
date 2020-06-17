@@ -1,0 +1,34 @@
+- name: init_ansible
+  hosts: ansible
+  roles:
+    - init_ansible
+
+- name: init site
+  hosts: all
+  roles:
+    - init
+
+- name: general certs
+  hosts: ansible
+  roles:
+    - certs
+
+- name: install etcd
+  hosts: etcd
+  roles:
+    - etcd
+
+- name: install flannel
+  hosts: all
+  roles:
+    - flannel
+
+- name: install server
+  hosts: server
+  roles:
+    - server
+
+- name: install node
+  hosts: node
+  roles:
+    - node

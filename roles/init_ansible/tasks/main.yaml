@@ -1,0 +1,65 @@
+- name: "Download Go Tarball"
+  get_url:
+    url: "https://dl.google.com/go/go{{ go_version }}.linux-amd64.tar.gz"
+    dest: "{{ package_root_dir }}"
+  tags: init_ansible
+  when: env != 'local'
+
+- name: "Distribute Go Tarball"
+  copy:
+    src: "go{{ go_version }}.linux-amd64.tar.gz"
+    dest: "{{package_root_dir}}"
+  tags: init_ansible
+  when: env == 'local'
+
+- name: "Install Go"
+  unarchive:
+    src: "{{ package_root_dir }}/go{{ go_version }}.linux-amd64.tar.gz"
+    dest: "/usr/local/"
+    remote_src: yes
+  tags: init_ansible
+
+- name: "IF Go Already Exist In Profile"
+  shell:
+    cmd: grep '/usr/local/go' /etc/profile
+  register: judge_go_exist
+  ignore_errors: true
+  tags: init_ansible
+
+- name: "Make SSL Base Directory"
+  file:
+    name: "{{cert_root_dir}}/"
+    state: directory
+    recurse: true
+  with_items:
+    - etcd
+    - kubernetes/admin
+    - kubernetes/kube-apiserver
+    - kubernetes/kube-proxy
+    - kubernetes/kube-scheduler
+    - kubernetes/kube-controller-manager
+  tags: init_ansible
+
+- debug:
+    msg: "judge_go_exist: {{judge_go_exist}}"
+  tags: init_ansible
+
+- name: "Add Go to Profile"
+  lineinfile:
+    line: export PATH=$PATH:/usr/local/go/bin
+    path: /etc/profile
+  when: judge_go_exist is failed
+  tags: init_ansible
+
+- name: "Clone Cfssl Repo"
+  git:
+    repo: "https://github.com/cloudflare/cfssl.git"
+    dest: "{{ package_root_dir }}/cfssl"
+  tags: init_ansible
+
+- name: "Compile Cfssl and Copy Bin File To PATH"
+  shell: |
+    source /etc/profile && make && cp bin/* /usr/local/bin
+  args:
+    chdir: "{{ package_root_dir }}/cfssl"
+  tags: init_ansible

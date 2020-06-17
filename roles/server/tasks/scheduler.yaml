@@ -1,0 +1,29 @@
+- name: "Distribute Configuration File"
+  template:
+    src: kube-scheduler.j2
+    dest: "{{workdir}}/kubernetes/cfg/kube-scheduler"
+    force: true
+  tags: install_server, install_scheduler
+
+- name: "Distribute Start Script"
+  template:
+    src: kube-scheduler.service.j2
+    dest: "/usr/lib/systemd/system/kube-scheduler.service"
+    force: true
+  tags: install_server, install_scheduler
+
+- name: "Distribute Bin File"
+  copy:
+    src: "{{package_root_dir}}/kubernetes/server/bin/kube-scheduler"
+    dest: /usr/local/bin
+    remote_src: true
+    mode: 0755
+  tags: install_server, install_scheduler
+
+- name: "Start Kube Controller Manager"
+  systemd:
+    name: kube-scheduler
+    enabled: true
+    state: restarted
+    daemon-reload: true
+  tags: install_server, install_scheduler

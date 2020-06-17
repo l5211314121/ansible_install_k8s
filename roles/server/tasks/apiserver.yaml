@@ -1,0 +1,107 @@
+- name: "DownLoad Kubernetes Tarball"
+  get_url:
+    url: "https://dl.k8s.io/{{kubernetes_version}}/kubernetes-server-linux-amd64.tar.gz"
+    dest: "{{package_root_dir}}"
+  tags: install_server, install_apiserver
+  when: env != 'local'
+
+- name: "Distribute Kubernetes Tarball"
+  copy:
+    src: kubernetes-server-linux-amd64.tar.gz
+    dest: "{{package_root_dir}}"
+  tags: install_server, install_apiserver
+  when: env == 'local'
+
+- name: "Unarchive Kubernetes Tarball"
+  unarchive:
+    src: "{{package_root_dir}}/kubernetes-server-linux-amd64.tar.gz"
+    dest: "{{package_root_dir}}"
+    remote_src: true
+    keep_newer: true
+  tags: install_server, install_apiserver
+
+- name: "Distrubute Api-server CA"
+  copy:
+    src: "{{cert_root_dir}}/kubernetes/{{item}}"
+    dest: "{{workdir}}/kubernetes/ssl/"
+    force: true
+  with_items: ["ca.pem", "ca-key.pem"]
+  tags: install_server, install_apiserver
+
+- name: "Distrubute Api-server Certs"
+  copy:
+    src: "{{cert_root_dir}}/kubernetes/kube-apiserver/{{item}}"
+    dest: "{{workdir}}/kubernetes/ssl/kube-apiserver/"
+  with_items: ["apiserver.pem", "apiserver-key.pem"]
+  tags: install_server, install_apiserver
+
+- name: "Distrubute admin Certs"
+  copy:
+    src: "{{cert_root_dir}}/kubernetes/admin/{{item}}"
+    dest: "{{workdir}}/kubernetes/ssl/admin/"
+  with_items: ["admin.pem", "admin-key.pem"]
+  tags: install_server, install_apiserver
+
+- name: "Distrubute Kube-apiserver Bin File"
+  copy:
+    src: "{{package_root_dir}}/kubernetes/server/bin/{{item}}"
+    dest: /usr/local/bin
+    remote_src: true
+    mode: 0755
+    force: true
+  with_items: ["kube-apiserver", "kubectl"]
+  tags: install_server, install_apiserver
+
+- name: "If Token.csv exist"
+  shell:
+    "grep kubelet {{workdir}}/kubernetes/cfg/token.csv"
+  ignore_errors: true
+  register: token_csv
+  tags: apiserver_token, install_apiserver
+
+- name: "Generate Token File"
+  lineinfile:
+    line: "{{apiserver_token}},kubelet-bootstrap,10001,\"system:kubelet-bootstrap\""
+    path: "{{workdir}}/kubernetes/cfg/token.csv"
+    create: true
+  tags: apiserver_token, install_apiserver
+  when: token_csv is failed
+
+- name: "Distribute Apiserver Configuration File"
+  template:
+    src: kube-apiserver.j2
+    dest: "{{workdir}}/kubernetes/cfg/kube-apiserver"
+    force: true
+  tags: install_server, install_apiserver
+
+- name: "Distribute Apiserver Start Script"
+  template:
+    src: kube-apiserver.service.j2
+    dest: /usr/lib/systemd/system/kube-apiserver.service
+  tags: install_server, install_apiserver
+
+- name: "Start Kube-apiserver"
+  systemd:
+    name: kube-apiserver
+    enabled: true
+    state: restarted
+    daemon-reload: true
+  tags: install_server, install_apiserver, start_apiserver, restart_apiserver
+
+- name: "Generate Admin Kubeconfig"
+  shell: |
+    kubectl config set-cluster myk8s --certificate-authority=../ssl/ca.pem --embed-certs=true --server=https://{{apiserver_master_addr}}:6443
+    kubectl config set-credentials admin --client-certificate=../ssl/admin/admin.pem --embed-certs=true --client-key=../ssl/admin/admin-key.pem
+    kubectl config set-context kubernetes --cluster=kubernetes --user=admin
+    kubectl config use-context kubernetes
+  args:
+    chdir: "{{workdir}}/kubernetes/cfg"
+  tags: install_server, install_apiserver
+
+- name: "Add Kubelet-bootstrap RoleBinding"
+  shell: |
+    kubectl  create  clusterrolebinding kubelet-bootstrap --clusterrole=system:node-bootstrapper --user=kubelet-bootstrap
+  args:
+    chdir: "{{workdir}}/kubernetes/cfg"
+  run_once: true
+  tags: install_server, install_apiserver
