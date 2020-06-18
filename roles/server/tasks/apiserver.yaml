@@ -99,7 +99,8 @@
   tags: install_server, install_apiserver
 
 - name: "Add Kubelet-bootstrap RoleBinding"
-  shell:
+  shell: |
+    sleep 20
     kubectl  create  clusterrolebinding kubelet-bootstrap --clusterrole=system:node-bootstrapper --user=kubelet-bootstrap
   args:
     chdir: "{{workdir}}/kubernetes/cfg"
@@ -115,6 +116,7 @@
 
 - name: "Add ClusterRole to Auto Approve Certificate"
   shell: |
+    sleep 10
     kubectl apply -f "{{workdir}}/kubernetes/cfg/csr_role.yaml"
     kubectl create clusterrolebinding node-client-auto-approve-csr --clusterrole=approve-node-client-csr --group=system:kubelet-bootstrap
   run_once: true
