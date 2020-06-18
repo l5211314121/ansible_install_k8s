@@ -53,3 +53,6 @@ apiserver_master_addr: 172.26.50.248
 
 # service端口范围
 service_port_range: 30000-50000
+
+# cni version
+cni_plugin_version: 0.8.5

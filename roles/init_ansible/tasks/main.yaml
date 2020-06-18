@@ -1,3 +1,17 @@
+- name: "Make Packages Base Directory"
+  file:
+    name: "{{ package_root_dir }}"
+    state: directory
+    recurse: true
+  tags: init_ansible
+
+- name: "Install Packages"
+  yum:
+    name: "{{item}}"
+    state: present
+  with_items: ["git", "gcc"]
+  tags: init_ansible
+
 - name: "Download Go Tarball"
   get_url:
     url: "https://dl.google.com/go/go{{ go_version }}.linux-amd64.tar.gz"

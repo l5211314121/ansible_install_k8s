@@ -75,6 +75,38 @@
     dest: "{{workdir}}/kubernetes/cfg/kubelet.config"
   tags: install_node, install_kubelet
 
+- name: "Make Cni Directories"
+  shell:
+    mkdir -p /opt/cni/{bin,net.d}
+  tags: install_node, install_kubelet
+
+- name: "Download cni_plugin"
+  get_url:
+    url: "https://github.com/containernetworking/plugins/releases/download/v{{cni_plugin_version}}/cni-plugins-linux-amd64-v{{cni_plugin_version}}.tgz"
+    dest: "{{package_root_dir}}"
+  tags: install_node, install_kubelet
+  when: env != 'local'
+
+- name: "Distribute cni_plugin"
+  copy:
+    src: "cni-plugins-linux-amd64-v{{cni_plugin_version}}.tgz"
+    dest: "{{package_root_dir}}"
+  tags: install_node, install_kubelet
+  when: env == 'local'
+
+- name: "Unarchive cni_plugin"
+  unarchive:
+    src: "{{package_root_dir}}/cni-plugins-linux-amd64-v{{cni_plugin_version}}.tgz"
+    dest: /opt/cni/bin
+    remote_src: true
+  tags: install_node, install_kubelet
+
+- name: "Distribute Cni Configruation Files"
+  template:
+    src: 10-flannel.conflist.j2
+    dest: /opt/cni/net.d/10-flannel.conflist
+  tags: install_node, install_kubelet
+
 - name: "Distribute Start Script"
   template:
     src: kubelet.service.j2

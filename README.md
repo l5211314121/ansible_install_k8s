@@ -2,6 +2,7 @@
 
 ### 使用方法
 命令示例：`ansible-play -i inventory etcd site.yaml -t init`
+全部安装：`ansible-play -i inventory etcd site.yaml`
 
 ### 参数
 - `-i inventory etcd`表示ansible的host文件，`inventory`中需要有ansible, all, etcd, server, node这几个组，其中ansible表示ansible主控机，all表示所有机器，etcd表示etcd的机器，server表示所有master机器，node表示所有node机器， 如果`inventory`为`/etc/ansible/hosts`则`-i inventory`可以忽略；etcd为inventory文件中组的名字

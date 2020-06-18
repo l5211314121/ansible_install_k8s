@@ -6,4 +6,7 @@ KUBELET_OPTS="--logtostderr=true \
 --config={{workdir}}/kubernetes/cfg/kubelet.config \
 --cert-dir={{workdir}}/kubernetes/ssl \
 --client-ca-file={{workdir}}/kubernetes/ssl/ca.pem \
+--cni-bin-dir=/opt/cni/bin \
+--cni-conf-dir=/opt/cni/net.d \
+--network-plugin=cni \
 --pod-infra-container-image=registry.cn-hangzhou.aliyuncs.com/google-containers/pause-amd64:3.0"
