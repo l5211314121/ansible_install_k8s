@@ -32,3 +32,8 @@
   hosts: node
   roles:
     - node
+
+- name: add new node
+  hosts: new-node
+  roles:
+    - node

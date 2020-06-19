@@ -1,12 +1,35 @@
-# 使用ansible通过二进制形式安装k8s
-
 ### 使用方法
-命令示例：`ansible-play -i inventory etcd site.yaml -t init`
-全部安装：`ansible-play -i inventory etcd site.yaml`
+准备一个`inventory file`，文件中写明各个组件对应的地址，etcd的地址后需要添加一个etcdname用来标识etcd，下面是一个etcd的示例：
+```
+[all]
+172.26.50.248
+172.26.234.10
+172.26.50.247
 
-### 参数
-- `-i inventory etcd`表示ansible的host文件，`inventory`中需要有ansible, all, etcd, server, node这几个组，其中ansible表示ansible主控机，all表示所有机器，etcd表示etcd的机器，server表示所有master机器，node表示所有node机器， 如果`inventory`为`/etc/ansible/hosts`则`-i inventory`可以忽略；etcd为inventory文件中组的名字
-- `-t init`表示使用的tag，例如只需要进行机器的初始化，那么只需要使用`-t init`标签，
+[node]
+172.26.234.10
+172.26.50.247
+
+[ansible]
+172.26.50.248
+
+[server]
+172.26.50.248
+
+[etcd]
+172.26.50.248 etcdname=etcd01
+172.26.234.10 etcdname=etcd02
+172.26.50.247 etcdname=etcd03
+
+[new-node]
+172.26.50.248
+```
+
+如果需要安装所有的组件，那么你可以直接执行`ansible-play site.yaml`命令，不需要指定任何的tag。如果需要安装特定的组件或者运行特定的功能，那么需要指定具体的tag。例如`ansible-play site.yaml -t install_node`命令会在指定的机器安装node组件。
+
+### 新增node机器
+新增node节点，需要在inventory文件中，将新机器的地址写入到`new-node`组中，然后执行`ansible-play new-node site.yaml -t install_node`命令即可
+
 
 ### 现有标签
 | 标签名 | 含义 |
@@ -30,3 +53,6 @@
 | restart_apiserver | 重启apiserver |
 | install_controller_manager | 安装controller-manager |
 | install_scheduler | 安装scheduler |
+| install_node | 配置node节点包括kubelet，kube-proxy |
+| install_kubelet | 安装kubelet |
+| install_kube_proxy | 安装kube-proxy |

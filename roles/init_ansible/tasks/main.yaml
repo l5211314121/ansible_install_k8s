@@ -17,14 +17,14 @@
     url: "https://dl.google.com/go/go{{ go_version }}.linux-amd64.tar.gz"
     dest: "{{ package_root_dir }}"
   tags: init_ansible
-#  when: env != 'local'
+  when: env != 'local'
 
-#- name: "Distribute Go Tarball"
-#  copy:
-#    src: "go{{ go_version }}.linux-amd64.tar.gz"
-#    dest: "{{package_root_dir}}"
-#  tags: init_ansible
-#  when: env == 'local'
+- name: "Distribute Go Tarball"
+  copy:
+    src: "go{{ go_version }}.linux-amd64.tar.gz"
+    dest: "{{package_root_dir}}"
+  tags: init_ansible
+  when: env == 'local'
 
 - name: "Install Go"
   unarchive:

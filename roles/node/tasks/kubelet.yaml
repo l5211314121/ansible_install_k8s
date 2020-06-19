@@ -1,3 +1,26 @@
+- name: "Remove Docker"
+  yum:
+    name: ["docker", "docker-client", "docker-client-latest", "docker-common", "docker-latest", "docker-latest-logrotate", "docker-logrotate", "docker-engine"]
+    state: absent
+  tags: install_node
+
+- name: "Add Docker repository"
+  shell:
+    yum-config-manager --add-repo {{docker_repo}}
+  tags: install_node
+
+- name: yum-clean-metadata
+  command: yum clean metadata
+  args:
+    warn: no
+  tags: install_node
+
+- name: Install Docker
+  yum:
+    name: "docker-ce-{{docker_version}}"
+    state: present
+  tags: install_node
+
 - name: "DownLoad Kubernetes Tarball"
   get_url:
     url: "https://dl.k8s.io/{{kubernetes_version}}/kubernetes-server-linux-amd64.tar.gz"

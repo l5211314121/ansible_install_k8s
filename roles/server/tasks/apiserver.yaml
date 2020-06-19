@@ -99,15 +99,13 @@
   tags: install_server, install_apiserver
 
 - name: "Add Kubelet-bootstrap RoleBinding"
-  shell:
+  shell: |
+    sleep 20
     kubectl  create  clusterrolebinding kubelet-bootstrap --clusterrole=system:node-bootstrapper --user=kubelet-bootstrap
   args:
     chdir: "{{workdir}}/kubernetes/cfg"
   run_once: true
   tags: install_server, install_apiserver, create_rolebinding
-  wait_for:
-    port: 8080
-    delay: 20
   ignore_errors: true
 
 - name: "Distribute ClusterRole File"
