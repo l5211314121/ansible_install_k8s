@@ -26,3 +26,16 @@
   args:
     chdir: "{{ cert_root_dir }}/kubernetes/kube-apiserver/"
   tags: certs, apiserver_certs
+
+- name: "Distribute Metrics-server CSR File"
+  copy:
+    src: "kubernetes/metrics-server-csr.json"
+    dest: "{{ cert_root_dir }}/kubernetes/kube-apiserver/apiserver-csr.json"
+  tags: certs, apiserver_certs
+
+- name: "Generate Metrics-server Certs File and Key File"
+    shell:
+      cfssl gencert -ca=../ca.pem -ca-key=../ca-key.pem -config=../ca-config.json -profile=kubernetes metrics-server-csr.json | cfssljson -bare metrics-server
+    args:
+      chdir: "{{ cert_root_dir }}/kubernetes/kube-apiserver/"
+    tags: certs, apiserver_certs

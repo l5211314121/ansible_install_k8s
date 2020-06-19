@@ -32,7 +32,7 @@
   copy:
     src: "{{cert_root_dir}}/kubernetes/kube-apiserver/{{item}}"
     dest: "{{workdir}}/kubernetes/ssl/kube-apiserver/"
-  with_items: ["apiserver.pem", "apiserver-key.pem"]
+  with_items: ["apiserver.pem", "apiserver-key.pem", "metrics-server.pem", "metrics-server-key.pem"]
   tags: install_server, install_apiserver
 
 - name: "Distrubute admin Certs"

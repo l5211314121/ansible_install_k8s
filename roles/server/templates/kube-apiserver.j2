@@ -18,6 +18,14 @@ KUBE_APISERVER_OPTS="--logtostderr=false \
 --etcd-cafile={{workdir}}/etcd/ssl/ca.pem \
 --etcd-certfile={{workdir}}/etcd/ssl/etcd.pem \
 --etcd-keyfile={{workdir}}/etcd/ssl/etcd-key.pem \
+--requestheader-client-ca-file={{workdir}}/kubernetes/ssl/ca.pem \
+--requestheader-extra-headers-prefix=X-Remote-Extra- \
+--requestheader-group-headers=X-Remote-Group \
+--requestheader-username-headers=X-Remote-User \
+--proxy-client-cert-file={{workdir}}/kubernetes/ssl/kube-apiserver/metrics-server.pem \
+--proxy-client-key-file={{workdir}}/kubernetes/ssl/kube-apiserver/metrics-server-key.pem \
+--runtime-config=api/all=true \
+--enable-aggregator-routing=true \
 --log-dir={{workdir}}/kubernetes/logs \
 --kubelet-client-certificate={{workdir}}/kubernetes/ssl/kube-apiserver/apiserver.pem \
 --kubelet-client-key={{workdir}}/kubernetes/ssl/kube-apiserver/apiserver-key.pem \
