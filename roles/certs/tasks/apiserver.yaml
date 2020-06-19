@@ -34,8 +34,8 @@
   tags: certs, apiserver_certs
 
 - name: "Generate Metrics-server Certs File and Key File"
-    shell:
-      cfssl gencert -ca=../ca.pem -ca-key=../ca-key.pem -config=../ca-config.json -profile=kubernetes metrics-server-csr.json | cfssljson -bare metrics-server
-    args:
-      chdir: "{{ cert_root_dir }}/kubernetes/kube-apiserver/"
-    tags: certs, apiserver_certs
+  shell:
+    cfssl gencert -ca=../ca.pem -ca-key=../ca-key.pem -config=../ca-config.json -profile=kubernetes metrics-server-csr.json | cfssljson -bare metrics-server
+  args:
+    chdir: "{{ cert_root_dir }}/kubernetes/kube-apiserver/"
+  tags: certs, apiserver_certs

@@ -36,7 +36,7 @@
     dest: "{{workdir}}/etcd/ssl/"
     force: true
   with_items: ["ca.pem", "ca-key.pem", "etcd.pem", "etcd-key.pem"]
-  tags: install_etcd
+  tags: install_etcd, distribute_etcd_certs
 
 - name: "Copy ETCD Configuration Files"
   template:
@@ -64,4 +64,4 @@
     state: restarted
     enabled: true
     daemon-reload: true
-  tags: install_etcd, restart_etcd
+  tags: install_etcd, restart_etcd, distribute_etcd_certs

@@ -99,7 +99,7 @@
     name: flanneld
     state: restarted
     enabled: true
-  tags: install_flannel, restart_flanneld
+  tags: install_flannel, restart_flanneld, distribute_etcd_certs
 
 - name: "Restart Docker"
   systemd:

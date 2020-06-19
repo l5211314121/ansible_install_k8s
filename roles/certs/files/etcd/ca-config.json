@@ -1,11 +1,11 @@
 {
     "signing": {
         "default": {
-            "expiry": "87600h"
+            "expiry": "8760h"
         },
         "profiles": {
             "etcd": {
-                "expiry": "87600h",
+                "expiry": "8760h",
                 "usages": [
                     "signing",
                     "key encipherment",
