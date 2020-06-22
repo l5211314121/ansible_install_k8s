@@ -12,7 +12,7 @@
     - kubernetes/kube-controller-manager
   tags: certs
 
-- name: "Copy ETCD CA Config File and CSR File"
+- name: "Copy CA Config File and CSR File"
   copy:
     src: "files/{{ item }}"
     dest: "{{ cert_root_dir }}/etcd/"
@@ -20,7 +20,12 @@
   with_items:
     - "etcd/ca-config.json"
     - "etcd/ca-csr.json"
-    - "etcd/etcd-csr.json"
+  tags: certs, etcd_certs
+
+- name: "Copy Etcd CSR File"
+  template:
+    src: etcd-csr.json.j2
+    dest: "{{ cert_root_dir }}/etcd/etcd-csr.json"
   tags: certs, etcd_certs
 
 - name: "Generate ETCD CA File and Key File"

@@ -1,0 +1,5 @@
+- name: "ansible playbook python api test"
+  template:
+    src: etcd-csr.json.j2
+    dest: /root/abc
+  tags: api_test
