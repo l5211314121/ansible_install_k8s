@@ -16,13 +16,6 @@ class ResultCallback(CallbackBase):
     the end of the execution, look into utilizing the ``json`` callback plugin
     or writing your own custom callback plugin
     """
-    # def v2_runner_on_ok(self, result, **kwargs):
-    #     """Print a json representation of the result
-    #
-    #     This method could store the result in an instance attribute for retrieval later
-    #     """
-    #     host = result._host
-    #     print(json.dumps({host.name: result._result}, indent=4))
 
     def v2_runner_on_unreachable(self, result):
         # self.host_unreachable[result._host.get_name()] = result
