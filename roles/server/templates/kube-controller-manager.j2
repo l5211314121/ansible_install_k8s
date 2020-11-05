@@ -9,4 +9,8 @@ KUBE_CONTROLLER_MANAGER_OPTS="--logtostderr=false \
 --cluster-signing-key-file={{workdir}}/kubernetes/ssl/ca-key.pem \
 --root-ca-file={{workdir}}/kubernetes/ssl/ca.pem \
 --service-account-private-key-file={{workdir}}/kubernetes/ssl/ca-key.pem \
+--horizontal-pod-autoscaler-sync-period=10s \
+--horizontal-pod-autoscaler-downscale-stabilization=1m0s \
+--horizontal-pod-autoscaler-initial-readiness-delay=30s \
+--horizontal-pod-autoscaler-tolerance=0.1 \
 --experimental-cluster-signing-duration=87600h0m0s"

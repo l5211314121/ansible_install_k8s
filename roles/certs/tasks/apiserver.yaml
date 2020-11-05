@@ -30,7 +30,7 @@
 - name: "Distribute Metrics-server CSR File"
   copy:
     src: "kubernetes/metrics-server-csr.json"
-    dest: "{{ cert_root_dir }}/kubernetes/kube-apiserver/apiserver-csr.json"
+    dest: "{{ cert_root_dir }}/kubernetes/kube-apiserver/metrics-server-csr.json"
   tags: certs, apiserver_certs
 
 - name: "Generate Metrics-server Certs File and Key File"

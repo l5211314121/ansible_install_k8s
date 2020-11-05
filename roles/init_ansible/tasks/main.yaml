@@ -7,9 +7,8 @@
 
 - name: "Install Packages"
   yum:
-    name: "{{item}}"
+    name: ["git", "gcc"]
     state: present
-  with_items: ["git", "gcc"]
   tags: init_ansible
 
 - name: "Download Go Tarball"
