@@ -21,7 +21,8 @@
 - name: install flannel
   hosts: all
   roles:
-    - flannel
+    - {role: flannel, when: network_mode != "cni"}
+
 
 - name: install server
   hosts: server

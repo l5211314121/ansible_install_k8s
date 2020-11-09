@@ -41,7 +41,7 @@
 
 - name: "Make SSL Base Directory"
   file:
-    name: "{{cert_root_dir}}/"
+    name: "{{cert_root_dir}}/{{item}}"
     state: directory
     recurse: true
   with_items:

@@ -56,3 +56,6 @@ service_port_range: 30000-50000
 
 # cni version
 cni_plugin_version: 0.8.5
+
+# network_mode: cni | flannel
+network_mode: cni

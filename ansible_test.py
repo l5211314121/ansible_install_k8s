@@ -37,18 +37,16 @@ class ResultCallback(CallbackBase):
         task_name = result._task._attributes['name']
         # action = result._task._attributes['action']
         if task_name == 'Gathering Facts':
-            print("wocao, ok")
+            pass
         else:
-            # output = ParseResult.parse(result)
-            # print(output)
-            print(result.__dict__)
-
+            output = ParseResult.parse(result)
+            print(output)
 
     def v2_runner_on_failed(self, result, *args, **kwargs):
         # self.host_failed[result._host.get_name()] = result
         host = result._host
         print("==================")
-        print(json.dumps({host.name: result._result}, indent=4))
+        print(json.dumps({host.name: result.__dict__}, indent=4))
 
 # Instantiate our ResultCallback for handling results as they come in. Ansible expects this to be one of its main display outlets
 results_callback = ResultCallback()
@@ -56,7 +54,7 @@ results_callback = ResultCallback()
 # since the API is constructed for CLI it expects certain options to always be set in the context object
 context.CLIARGS = ImmutableDict(connection='ssh', module_path=['/usr/local/lib/python3.6/site-packages/ansible'], forks=10, become=None,
                                 become_method=None, become_user=None, check=False, diff=False,
-                                tags=['init_ansible'], syntax=False, start_at_task=None, verbosity=0
+                                tags=[], syntax=False, start_at_task=None, verbosity=0
                                 )
 
 loader = DataLoader() # Takes care of finding and reading yaml, json and ini files
@@ -73,7 +71,7 @@ playbook = PlaybookExecutor(playbooks=['/root/packages/ansible_install_k8s/site.
                             variable_manager=variable_manager,
                             loader=loader,
                             passwords=passwords)
-playbook._tqm._callback_plugins.append(results_callback)
-# playbook._tqm._callback_plugins = [results_callback]
+# playbook._tqm._callback_plugins.append(results_callback)
+playbook._tqm._callback_plugins = [results_callback]
 
 playbook.run()
