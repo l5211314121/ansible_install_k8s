@@ -101,7 +101,15 @@
 - name: "Make Cni Directories"
   shell:
     mkdir -p /opt/cni/{bin,net.d}
+    mkdir -p /run/flannel
   tags: install_node, install_kubelet
+
+- name: "Distribute Flannel Subnet.env"
+  template:
+    src: subnet.env.j2
+    dest: /run/flannel/subnet.env
+  tags: install_node, install_kubelet
+  when: network_mode == "cni"
 
 - name: "Download cni_plugin"
   get_url:
