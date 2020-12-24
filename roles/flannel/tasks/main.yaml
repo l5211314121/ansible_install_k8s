@@ -3,26 +3,28 @@
     url: "https://github.com/coreos/flannel/releases/download/{{flannel_version}}/flanneld-amd64"
     dest: "{{package_root_dir}}"
   tags: install_flannel
-  when: env != 'local'
+  when: env != 'local' and cni_mode == 'no'
 
 - name: "Distribute Flanneld Tarball"
   copy:
     src: "flannel-v{{flannel_version}}-linux-amd64.tar.gz"
     dest: "{{package_root_dir}}"
   tags: install_flannel
-  when: env == 'local'
+  when: env == 'local' and cni_mode == 'no'
 
 - name: "Make Flannel Package Directory"
   file:
     name: "{{package_root_dir}}/flannel"
     state: directory
   tags: install_flannel
+  when: cni_mode == 'no'
 
 - name: "Unarchive Flanneld Tarball"
   unarchive:
     src: "{{package_root_dir}}/flannel-v{{flannel_version}}-linux-amd64.tar.gz"
     dest: "{{package_root_dir}}/flannel"
   tags: install_flannel
+  when: cni_mode == 'no'
 
 - name: "Copy Flanneld To Path"
   copy:
@@ -34,12 +36,14 @@
     - flanneld
     - mk-docker-opts.sh
   tags: install_flannel
+  when: cni_mode == 'no'
 
 - name: "Copy Flannel Configuration File"
   template:
     src: flanneld.j2
     dest: "{{workdir}}/kubernetes/cfg/flanneld"
   tags: install_flannel
+  when: cni_mode == 'no'
 
 - name: "IF Distrubute ETCD Certs"
   shell:
@@ -47,6 +51,7 @@
   register: if_distribute_etcd_certs
   tags: install_flannel
   ignore_errors: true
+  when: cni_mode == 'no'
 
 - name: "Distrubute ETCD Certs"
   copy:
@@ -55,13 +60,14 @@
     force: true
   with_items: ["ca.pem", "ca-key.pem", "etcd.pem", "etcd-key.pem"]
   tags: install_flannel
-  when: if_distribute_etcd_certs is failed
+  when: if_distribute_etcd_certs is failed and cni_mode == 'no'
 
 - name: "Copy Flannel Systemd Script"
   template:
     src: flanneld.service.j2
     dest: /usr/lib/systemd/system/flanneld.service
   tags: install_flannel
+  when: cni_mode == 'no'
 
 - name: "Set Flanneld Network Info - Step-1"
   template:
@@ -84,6 +90,7 @@
   ignore_errors: true
   register: change_docker_file
   tags: install_flannel, change_docker_script
+  when: cni_mode == 'no'
 
 - name: "Change Docker Start Command"
   lineinfile:
@@ -91,7 +98,7 @@
     regexp: '^ExecStart'
     line: "EnvironmentFile=/run/flannel/subnet.env\nExecStart=/usr/bin/dockerd -H fd:// --containerd=/run/containerd/containerd.sock $DOCKER_NETWORK_OPTIONS"
   tags: install_flannel, change_docker_script
-  when: change_docker_file is failed
+  when: change_docker_file is failed and cni_mode == 'no'
 
 - name: "Restart Flannel"
   systemd:
@@ -100,6 +107,7 @@
     state: restarted
     enabled: true
   tags: install_flannel, restart_flanneld, distribute_etcd_certs
+  when: cni_mode == 'no'
 
 - name: "Restart Docker"
   systemd:
@@ -108,3 +116,4 @@
     state: restarted
     enabled: true
   tags: install_flannel, restart_docker
+  when: cni_mode == 'no'

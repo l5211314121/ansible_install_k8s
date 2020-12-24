@@ -4,6 +4,9 @@ env: local
 # 工作目录
 workdir: /opt
 
+# 是否启用CNI插件
+cni_mode: yes
+
 # ansible主控机机器证书存放位置
 cert_root_dir: /root/ssl
 
@@ -37,7 +40,7 @@ flannel_network: '{"Network":"10.0.0.0/8", "Backend":{"Type": "vxlan"}}'
 # kubernetes 版本，env不为local时，会下载
 # https://dl.k8s.io/{{kubernetes_version}}/kubernetes-server-linux-amd64.tar.gz
 # 否则会上传本地files中的包
-kubernetes_version: v1.15.11
+kubernetes_version: v1.18.09
 
 # 可以通过 `head -c 16 /dev/urandom | od -An -t x | tr -d ' '`生成token
 apiserver_token: e023733c8d7aa0f1ab2403e877af9f63

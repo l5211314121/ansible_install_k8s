@@ -1,6 +1,7 @@
 KUBE_SCHEDULER_OPTS="--logtostderr=false \
---v=4 \
+--v=1 \
 --master=127.0.0.1:8080 \
 --leader-elect=true \
 --tls-cert-file={{workdir}}/kubernetes/ssl/ca.pem \
+--log-file=/opt/kubernetes/logs/kube-scheduler.log \
 --tls-private-key-file={{workdir}}/kubernetes/ssl/ca-key.pem"
