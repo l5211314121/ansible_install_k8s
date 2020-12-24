@@ -69,21 +69,6 @@
   tags: install_flannel
   when: cni_mode == 'no'
 
-- name: "Set Flanneld Network Info - Step-1"
-  template:
-    src: network.sh.j2
-    dest: "{{package_root_dir}}/network.sh"
-    mode: 0755
-  tags: install_etcd, set_network
-
-- name: "Set Flanneld Network Info - Step-2"
-  shell:
-    /bin/bash network.sh
-  args:
-    chdir: "{{package_root_dir}}"
-  tags: install_etcd, set_network
-  run_once: true
-
 - name: "Judge Change Docker Script"
   shell:
     grep EnvironmentFile /usr/lib/systemd/system/docker.service

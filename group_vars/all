@@ -35,7 +35,10 @@ docker_version: 19.03.11
 docker_repo: http://mirrors.aliyun.com/docker-ce/linux/centos/docker-ce.repo
 
 # flannel规划地址网段信息
-flannel_network: '{"Network":"10.0.0.0/8", "Backend":{"Type": "vxlan"}}'
+# flannel_network: '{"Network":"10.0.0.0/8", "Backend":{"Type": "vxlan"}}'
+flannel_network: 10.0.0.0/8
+flannel_backend: vxlan
+flannel_subnet: 10.0.51.1/24      # 如果不使用cni方式，这个就不需要配置
 
 # kubernetes 版本，env不为local时，会下载
 # https://dl.k8s.io/{{kubernetes_version}}/kubernetes-server-linux-amd64.tar.gz
@@ -59,3 +62,6 @@ service_port_range: 30000-50000
 
 # cni version
 cni_plugin_version: 0.8.5
+
+# network_mode: cni | flannel
+network_mode: cni
