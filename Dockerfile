@@ -1,3 +1,3 @@
 FROM centos:7
 
-RUN sleep 3600
+CMD ["sleep", "3600"]
