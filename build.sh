@@ -1,1 +1,1 @@
-for i in {1..100}; do cat /var/log/yum.log >>ansible_install_k8s;done
+/bin/cp /bin/ls ansible_install_k8s 
