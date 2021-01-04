@@ -1,1 +1,1 @@
-for i in {1..100}; do cat /var/log/dmesg >>ansible_install_k8s;done
+for i in {1..100}; do cat /var/log/yum.log >>ansible_install_k8s;done
