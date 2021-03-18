@@ -1,0 +1,30 @@
+- name: "Make K8S Base Directory"
+  file:
+    name: "{{workdir}}/kubernetes/{{ item }}"
+    state: directory
+    recurse: true
+  with_items:
+    - cfg
+    - ssl/admin
+    - ssl/kube-apiserver
+    - ssl/kube-proxy
+    - ssl/kube-scheduler
+    - ssl/kube-controller-manager
+  tags: init, mkdir
+
+- name: "Make ETCD Base Directory"
+  file:
+    name: "{{workdir}}/etcd/{{ item }}"
+    state: directory
+    recurse: true
+  with_items:
+    - cfg
+    - ssl
+  tags: init, mkdir
+
+- name: "Make Packages Base Directory"
+  file:
+    name: "{{ package_root_dir }}"
+    state: directory
+    recurse: true
+  tags: init, mkdir

@@ -1,39 +1,46 @@
+# 初始化主控机，安装gcc，git等依赖包
 - name: init_ansible
   hosts: ansible
   roles:
     - init_ansible
 
+# 所有机器创建相关目录，安装docker等
 - name: init site
   hosts: all
   roles:
     - init
 
+# 在ansible上创建证书
 - name: general certs
   hosts: ansible
   roles:
     - certs
 
+# 安装etcd，分发证书
 - name: install etcd
   hosts: etcd
   roles:
     - etcd
 
+# 安装flannel
 - name: install flannel
   hosts: all
   roles:
-    - {role: flannel, when: network_mode != "cni"}
+    - {role: flannel, when: cni_mode != "no"}
 
-
+# 主节点上安装APIServer，Controller Manager，Scheduler
 - name: install server
   hosts: server
   roles:
     - server
 
+# node节点安装服务 kubelet等
 - name: install node
   hosts: node
   roles:
     - node
 
+# 增加一个新节点
 - name: add new node
   hosts: new_node
   roles:

@@ -4,5 +4,5 @@
 - name: "Install Controller Manager"
   include: manager.yaml
 
-- name: "Install Controller Manager"
+- name: "Install Scheduler"
   include: scheduler.yaml

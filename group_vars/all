@@ -1,7 +1,7 @@
-# 使用本地包，还是通过网络下载，如果通过网络下载需要将local修改为network
+# 使用本地包，还是通过网络下载，如果通过网络下载需要将local修改为nonlocal
 env: local
 
-# 工作目录
+# 工作(安装)目录
 workdir: /opt
 
 # 是否启用CNI插件

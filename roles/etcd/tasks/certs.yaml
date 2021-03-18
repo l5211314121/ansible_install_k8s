@@ -1,0 +1,7 @@
+- name: "Distribute ETCD Certs"
+  copy:
+    src: "{{cert_root_dir}}/etcd/{{item}}"
+    dest: "{{workdir}}/etcd/ssl/"
+    force: true
+  with_items: ["ca.pem", "ca-key.pem", "etcd.pem", "etcd-key.pem"]
+  tags: install_etcd, distribute_etcd_certs

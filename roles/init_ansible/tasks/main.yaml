@@ -5,6 +5,20 @@
     recurse: true
   tags: init_ansible
 
+- name: "Make SSL Base Directory"
+  file:
+    name: "{{cert_root_dir}}/{{item}}"
+    state: directory
+    recurse: true
+  with_items:
+    - etcd
+    - kubernetes/admin
+    - kubernetes/kube-apiserver
+    - kubernetes/kube-proxy
+    - kubernetes/kube-scheduler
+    - kubernetes/kube-controller-manager
+  tags: init_ansible
+
 - name: "Install Packages"
   yum:
     name: ["git", "gcc"]
@@ -32,36 +46,28 @@
     remote_src: yes
   tags: init_ansible
 
-- name: "IF Go Already Exist In Profile"
-  shell:
-    cmd: grep '/usr/local/go' /etc/profile
-  register: judge_go_exist
-  ignore_errors: true
-  tags: init_ansible
+# - name: "IF Go Already Exist In Profile"
+#   shell:
+#     cmd: grep '/usr/local/go' /etc/profile
+#   register: judge_go_exist
+#   ignore_errors: true
+#   tags: init_ansible
 
-- name: "Make SSL Base Directory"
-  file:
-    name: "{{cert_root_dir}}/{{item}}"
-    state: directory
-    recurse: true
-  with_items:
-    - etcd
-    - kubernetes/admin
-    - kubernetes/kube-apiserver
-    - kubernetes/kube-proxy
-    - kubernetes/kube-scheduler
-    - kubernetes/kube-controller-manager
-  tags: init_ansible
+# - debug:
+#     msg: "judge_go_exist: {{judge_go_exist}}"
+#   tags: init_ansible
 
-- debug:
-    msg: "judge_go_exist: {{judge_go_exist}}"
-  tags: init_ansible
+# - name: "Add Go to Profile"
+#   lineinfile:
+#     line: export PATH=$PATH:/usr/local/go/bin
+#     path: /etc/profile
+#   when: judge_go_exist is failed
+#   tags: init_ansible
 
-- name: "Add Go to Profile"
-  lineinfile:
-    line: export PATH=$PATH:/usr/local/go/bin
-    path: /etc/profile
-  when: judge_go_exist is failed
+- name: "Add go to profile"
+  copy:
+    src: "golang.sh"
+    dest: "/etc/profile.d/golang.sh"
   tags: init_ansible
 
 - name: "Clone Cfssl Repo"

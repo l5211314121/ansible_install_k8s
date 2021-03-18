@@ -1,68 +1,9 @@
-- name: "Make K8S Base Directory"
-  file:
-    name: "{{workdir}}/kubernetes/{{ item }}"
-    state: directory
-    recurse: true
-  with_items:
-    - cfg
-    - ssl/admin
-    - ssl/kube-apiserver
-    - ssl/kube-proxy
-    - ssl/kube-scheduler
-    - ssl/kube-controller-manager
-  tags: init, mkdir
-
-- name: "Make ETCD Base Directory"
-  file:
-    name: "{{workdir}}/etcd/{{ item }}"
-    state: directory
-    recurse: true
-  with_items:
-    - cfg
-    - ssl
-  tags: init, mkdir
-
-- name: "Make Packages Base Directory"
-  file:
-    name: "{{ package_root_dir }}"
-    state: directory
-    recurse: true
-  tags: init, mkdir
-
-- name: "Remove Docker"
-  yum:
-    name: ["docker", "docker-client", "docker-client-latest", "docker-common", "docker-latest", "docker-latest-logrotate", "docker-logrotate", "docker-engine"]
-    state: absent
+- name: "System Environment"
+  include: system.yaml
   tags: init
+  
+- name: "Create Directories"
+  include: directories.yaml
 
-- name: "Add Docker repository"
-  shell:
-    yum-config-manager --add-repo {{docker_repo}}
-  tags: init
-
-- name: yum-clean-metadata
-  command: yum clean metadata
-  args:
-    warn: no
-  tags: init
-
-- name: Install Docker
-  yum:
-    name: "docker-ce-{{docker_version}}"
-    state: present
-  tags: init
-
-- name: Stop Docker
-  systemd:
-    name: docker
-    state: stopped
-  tags: stop_docker
-
-- name: Start Docker
-  systemd:
-    name: docker
-    enabled: true
-    state: restarted
-    daemon-reload: true
-  tags: init, start_docker
-
+- name: "Install Docker"
+  include: docker.yaml
