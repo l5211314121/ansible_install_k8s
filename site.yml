@@ -40,6 +40,11 @@
   roles:
     - node
 
+- name: install addons
+  host: server
+  roles:
+    - addons
+
 # 增加一个新节点
 - name: add new node
   hosts: new_node

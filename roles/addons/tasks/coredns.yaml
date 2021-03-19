@@ -1,0 +1,10 @@
+- name: "Clone Repository"
+  git: 
+    repo: "https://github.com/coredns/deployment.git"
+    dest: "{{workdir}}/kubernetes/{{ item }}/addons/"
+  tags: install_coredns
+
+- name: "Install Core DNS"
+  shell: |
+    ./deploy.sh -i {{coredns_service_ip}} | kubectl apply -f -
+  tags: install_coredns

@@ -62,3 +62,6 @@ service_port_range: 30000-50000
 
 # cni version
 cni_plugin_version: 0.8.5
+
+# coredns service的ip
+coredns_service_ip: 192.168.0.1
