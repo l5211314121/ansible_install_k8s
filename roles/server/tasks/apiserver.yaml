@@ -90,7 +90,7 @@
 
 - name: "Generate Admin Kubeconfig"
   shell: |
-    kubectl config set-cluster myk8s --certificate-authority=../ssl/ca.pem --embed-certs=true --server=https://{{apiserver_master_addr}}:6443
+    kubectl config set-cluster myk8s --certificate-authority=../ssl/ca.pem --embed-certs=true --server=https://{{apiserver_lb_addr}}:6443
     kubectl config set-credentials admin --client-certificate=../ssl/admin/admin.pem --embed-certs=true --client-key=../ssl/admin/admin-key.pem
     kubectl config set-context kubernetes --cluster=kubernetes --user=admin
     kubectl config use-context kubernetes
