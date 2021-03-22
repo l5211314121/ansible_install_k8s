@@ -16,7 +16,7 @@ package_root_dir: /root/packages
 # go语言版本，env不是local时会下载
 # https://dl.google.com/go/go{{go_version}}.linux-amd64.tar.gz
 # 否则会上传本地files中的包
-go_version: 1.13.10
+go_version: 1.15.8
 
 # etcd版本，env不为local时，会下载
 # https://github.com/etcd-io/etcd/releases/download/v{{etcd_version}}/etcd-v{{etcd_version}}-linux-amd64.tar.gz
@@ -43,7 +43,7 @@ flannel_subnet: 10.0.51.1/24      # 如果不使用cni方式，这个就不需�
 # kubernetes 版本，env不为local时，会下载
 # https://dl.k8s.io/{{kubernetes_version}}/kubernetes-server-linux-amd64.tar.gz
 # 否则会上传本地files中的包
-kubernetes_version: v1.18.09
+kubernetes_version: v1.18.17
 
 # 可以通过 `head -c 16 /dev/urandom | od -An -t x | tr -d ' '`生成token
 apiserver_token: e023733c8d7aa0f1ab2403e877af9f63

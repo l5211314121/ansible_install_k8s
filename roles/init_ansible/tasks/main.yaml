@@ -72,7 +72,8 @@
 
 - name: "Clone Cfssl Repo"
   git:
-    repo: "https://github.com/cloudflare/cfssl.git"
+#    repo: "https://github.com/cloudflare/cfssl.git"
+    repo: "https://gitee.com/mayesheng/cfssl.git"
     dest: "{{ package_root_dir }}/cfssl"
   tags: init_ansible
 

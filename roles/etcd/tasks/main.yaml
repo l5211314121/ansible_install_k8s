@@ -1,8 +1,8 @@
 - name: "Distribute Etcd Certs"
-  include: certs
+  include: certs.yaml
 
 - name: "Install Etcd"
-  include: install_etcd
+  include: install_etcd.yaml
 
 - name: "Write Network Info To Etcd"
-  include: network_info
+  include: network_info.yaml

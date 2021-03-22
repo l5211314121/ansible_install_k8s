@@ -40,8 +40,9 @@
   roles:
     - node
 
+# 安装addons
 - name: install addons
-  host: server
+  hosts: server
   roles:
     - addons
 

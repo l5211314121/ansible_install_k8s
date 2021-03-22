@@ -1,6 +1,6 @@
 - name: "Install new packages"
   yum:
-    name: ['conntrack', 'ipvsadm', 'ipset', 'iptables-services', 'libseccomp', 'jq', 'sysstat', 'curl', 'wget', 'net-tools', 'telnet', 'vim', 'socat']
+    name: ['conntrack', 'ipvsadm', 'ipset', 'iptables-services', 'libseccomp', 'jq', 'sysstat', 'curl', 'wget', 'net-tools', 'telnet', 'vim', 'socat', 'unzip']
     state: present
   
 - name: "Disable Selinux"
@@ -31,7 +31,7 @@
     dest: /etc/sysctl.d/k8s.conf
 
 - name: "Apply System Variables"
-  shell: modprobe br_netfilter && sysctl -p /etc/sysctl.d/99-k8s.conf
+  shell: modprobe br_netfilter && sysctl -p /etc/sysctl.d/k8s.conf
 
 - name: "Change TimeZone"
   shell: timedatectl set-timezone Asia/Shanghai
