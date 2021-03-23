@@ -1,0 +1,19 @@
+- name: "Install Nginx Server"
+  yum:
+    name: "nginx"
+    state: present
+  tags: install_nginx
+
+- name: "Distribute Proxy Configuration File"
+  template:
+    src: nginx.conf.j2
+    dest: /etc/nginx/nginx.conf
+  tags: install_nginx
+
+- name: "Enable Nginx"
+  systemd:
+    name: nginx
+    enabled: true
+    state: started
+    daemon_reload: true
+  tags: install_nginx
