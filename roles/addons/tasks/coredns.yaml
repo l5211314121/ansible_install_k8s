@@ -3,8 +3,27 @@
     repo: "https://github.com/coredns/deployment.git"
     dest: "{{ package_root_dir }}/kubernetes/addons/coredns"
   tags: install_coredns
+  when: env != 'local'
+
+- name: "Distribute CoreDNS TarBall"
+  copy:
+#    src: "coredns-{{ coredns_version }}.tgz"
+    src: "deployment-master.zip"
+    dest: "{{ package_root_dir }}/kubernetes/addons/"
+  tags: install_coredns
+  when: env == 'local'
+
+- name: "Unarchive CoreDns TarBall"
+  unarchive:
+    src: "{{ package_root_dir }}/kubernetes/addons/deployment-master.zip"
+    dest: "{{ package_root_dir }}/kubernetes/addons/"
+    remote_src: true
+  tags: install_coredns
+  when: env == 'local'
 
 - name: "Install Core DNS"
   shell: |
     ./deploy.sh -i {{coredns_service_ip}} | kubectl apply -f -
+  args:
+    chdir: "{{ package_root_dir }}/kubernetes/addons/deployment-master/kubernetes"
   tags: install_coredns

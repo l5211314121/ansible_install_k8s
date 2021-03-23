@@ -4,6 +4,7 @@
     dest: "{{package_root_dir}}/network.sh"
     mode: 0755
   tags: install_etcd, set_network
+  when: cni_mode == 'no'
 
 - name: "Set Flanneld Network Info - Step-2"
   shell:
@@ -12,3 +13,4 @@
     chdir: "{{package_root_dir}}"
   tags: install_etcd, set_network
   run_once: true
+  when: cni_mode == 'no'
