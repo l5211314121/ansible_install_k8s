@@ -4,8 +4,9 @@ address: {{ ansible_default_ipv4.address }}
 port: 10250
 readOnlyPort: 10255
 cgroupDriver: cgroupfs
+podCidr: {{ pod_cidr }}
 clusterDNS:
-- 10.0.0.2
+- {{ coredns_service_ip }}
 clusterDomain: cluster.local.
 failSwapOn: false
 authentication:

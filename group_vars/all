@@ -51,8 +51,11 @@ apiserver_token: e023733c8d7aa0f1ab2403e877af9f63
 # api机器地址，用于生成证书使用 (弃用，现在通过ansible inventory file中的server获取)
 # apiserver_addr: '"172.26.50.248","47.92.148.31","172.26.234.10","172.26.50.247"'
 
-# apiserver地址网段
-apiserver_network_prefix: 192.168.0.0/16
+# service 网段
+service_cidr: 192.168.1.0/24
+
+# pod 网段
+pod_cidr: 192.168.2.0/24
 
 # 如果是高可用集群，需要写vip，或者其中一个master的地址，用于生成kubeconfig
 apiserver_lb_addr: 172.26.50.248
