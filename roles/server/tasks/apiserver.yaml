@@ -102,6 +102,7 @@
   shell: |
     sleep 20
     kubectl  create  clusterrolebinding kubelet-bootstrap --clusterrole=system:node-bootstrapper --user=kubelet-bootstrap
+    kubectl  create clusterrolebinding system:admin --clusterrole=cluster-admin --user=kubernetes
   args:
     chdir: "{{workdir}}/kubernetes/cfg"
   run_once: true
