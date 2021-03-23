@@ -30,3 +30,9 @@
     state: directory
     recurse: true
   tags: init, mkdir
+
+- name: "Make Flannel Directory"
+  file:
+    name: "{{ package_root_dir }}/flannel"
+    state: directory
+  tags: init, mkdir
