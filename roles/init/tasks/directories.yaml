@@ -6,6 +6,7 @@
   with_items:
     - addons
     - cfg
+    - logs
     - ssl/admin
     - ssl/kube-apiserver
     - ssl/kube-proxy
