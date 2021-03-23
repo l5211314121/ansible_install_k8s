@@ -109,7 +109,7 @@
     src: subnet.env.j2
     dest: /run/flannel/subnet.env
   tags: install_node, install_kubelet
-  when: network_mode == "cni"
+  when: cni_mode == "yes"
 
 - name: "Download cni_plugin"
   get_url:
