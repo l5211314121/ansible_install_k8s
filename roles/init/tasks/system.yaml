@@ -1,6 +1,6 @@
 - name: "Install new packages"
   yum:
-    name: ['conntrack', 'ipvsadm', 'ipset', 'iptables-services', 'libseccomp', 'jq', 'sysstat', 'curl', 'wget', 'net-tools', 'telnet', 'vim', 'socat', 'unzip']
+    name: ['conntrack', 'ipvsadm', 'ipset', 'iptables-services', 'libseccomp', 'jq', 'sysstat', 'curl', 'wget', 'net-tools', 'telnet', 'vim', 'socat', 'unzip', 'git']
     state: present
   
 - name: "Disable Selinux"
