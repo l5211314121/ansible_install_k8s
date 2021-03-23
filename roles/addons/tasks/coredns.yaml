@@ -1,7 +1,7 @@
 - name: "Clone Repository"
   git: 
     repo: "https://github.com/coredns/deployment.git"
-    dest: "{{ package_root_dir }}/kubernetes/addons/"
+    dest: "{{ package_root_dir }}/kubernetes/addons/coredns"
   tags: install_coredns
 
 - name: "Install Core DNS"
