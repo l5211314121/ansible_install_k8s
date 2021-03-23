@@ -36,7 +36,7 @@
 
 # node节点安装服务 kubelet等
 - name: install node
-  hosts: node
+  hosts: all
   roles:
     - node
 
