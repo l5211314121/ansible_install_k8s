@@ -17,7 +17,6 @@
     name: "{{package_root_dir}}/flannel"
     state: directory
   tags: install_flannel
-  when: cni_mode == 'no'
 
 - name: "Unarchive Flanneld Tarball"
   unarchive:

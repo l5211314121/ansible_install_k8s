@@ -22,12 +22,6 @@
   roles:
     - etcd
 
-# 安装flannel
-- name: install flannel
-  hosts: all
-  roles:
-    - {role: flannel, when: cni_mode != "no"}
-
 # 主节点上安装APIServer，Controller Manager，Scheduler
 - name: install server
   hosts: server
@@ -39,6 +33,12 @@
   hosts: all
   roles:
     - node
+
+# 安装flannel
+- name: install flannel
+  hosts: all
+  roles:
+    - {role: flannel, when: cni_mode != "yes"}
 
 # 安装addons
 - name: install addons

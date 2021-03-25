@@ -34,9 +34,9 @@ docker_version: 19.03.11
 # docker 源地址，初始化机器的时候需要添加到yum源中
 docker_repo: http://mirrors.aliyun.com/docker-ce/linux/centos/docker-ce.repo
 
-# flannel规划地址网段信息, 如果使用cni则不需要修改
+# flannel规划地址网段信息
 # flannel_network: '{"Network":"10.0.0.0/8", "Backend":{"Type": "vxlan"}}'
-flannel_network: 192.168.0.0/16
+flannel_network: 192.168.2.0/26
 flannel_backend: vxlan
 flannel_subnet: 10.0.51.1/24
 

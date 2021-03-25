@@ -5,7 +5,7 @@ KUBE_APISERVER_OPTS="--logtostderr=false \
 --secure-port=6443 \
 --advertise-address={{ansible_default_ipv4.address}} \
 --allow-privileged=true \
---service-cluster-ip-range={{apiserver_network_prefix}} \
+--service-cluster-ip-range={{service_cidr}} \
 --authorization-mode=RBAC,Node \
 --kubelet-https=true \
 --enable-bootstrap-token-auth \

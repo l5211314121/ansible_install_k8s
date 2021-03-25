@@ -90,12 +90,13 @@
   template:
     src: kubelet.j2
     dest: "{{workdir}}/kubernetes/cfg/kubelet"
-  tags: install_node, install_kubelet
+  tags: install_node, install_kubelet, kubelet_config
 
 - name: "Distribute Kubelet Configuration File"
   template:
     src: kubelet.config.j2
     dest: "{{workdir}}/kubernetes/cfg/kubelet.config"
+    force: true
   tags: install_node, install_kubelet, kubelet_config
 
 - name: "Make Cni Directories"
@@ -144,10 +145,10 @@
     dest: /usr/lib/systemd/system/kubelet.service
   tags: install_node, install_kubelet
 
-- name: "Start Kubelet"
+- name: "Restart Kubelet"
   systemd:
     name: kubelet
     enabled: true
     daemon_reload: true
     state: restarted
-  tags: install_node, install_kubelet
+  tags: install_node, install_kubelet, restart_kubelet

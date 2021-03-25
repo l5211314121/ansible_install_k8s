@@ -3,7 +3,7 @@ KUBE_CONTROLLER_MANAGER_OPTS="--logtostderr=false \
 --master=127.0.0.1:8080 \
 --leader-elect=true \
 --bind-address=127.0.0.1 \
---service-cluster-ip-range={{apiserver_network_prefix}} \
+--service-cluster-ip-range={{service_cidr}} \
 --cluster-name=kubernetes \
 --cluster-signing-cert-file={{workdir}}/kubernetes/ssl/ca.pem \
 --cluster-signing-key-file={{workdir}}/kubernetes/ssl/ca-key.pem \
