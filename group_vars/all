@@ -54,9 +54,6 @@ apiserver_token: e023733c8d7aa0f1ab2403e877af9f63
 # service 网段
 service_cidr: 192.168.1.0/24
 
-# pod 网段
-pod_cidr: 192.168.2.0/24
-
 # 如果是高可用集群，需要写vip，或者其中一个master的地址，用于生成kubeconfig
 apiserver_lb_addr: 172.26.50.248
 
