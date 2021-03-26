@@ -51,12 +51,15 @@ cni_plugin_version: 0.8.5
 
 # flannel规划地址网段信息
 # flannel_network: '{"Network":"10.0.0.0/8", "Backend":{"Type": "vxlan"}}'
-flannel_network: 192.168.2.0/26
+flannel_network: 10.245.0.0/16
 flannel_backend: vxlan
 flannel_subnet: 10.0.51.1/24
 
 # service 网段
-service_cidr: 192.168.1.0/24
+service_cidr: 10.10.0.0/16
+
+# coredns service的ip
+coredns_service_ip: 10.10.0.2
 
 
 ################################################ 集群相关 ################################################
@@ -77,5 +80,3 @@ service_port_range: 30000-50000
 # coredns 版本
 coredns_version: 1.14.0
 
-# coredns service的ip
-coredns_service_ip: 192.168.0.1
