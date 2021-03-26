@@ -1,34 +1,42 @@
 ### 使用方法
-准备一个`inventory file`，文件中写明各个组件对应的地址，etcd的地址后需要添加一个etcdname用来标识etcd，下面是一个etcd的示例：
+1. 准备一个`inventory file`，文件中写明各个组件对应的地址，etcd的地址后需要添加一个etcdname用来标识etcd，下面是一个示例：
 ```
 [all]
 172.26.50.248
-172.26.234.10
-172.26.50.247
+172.26.50.249
+172.26.50.250
+172.26.50.251
+172.26.50.252
 
 [node]
-172.26.234.10
-172.26.50.247
+172.26.50.248
+172.26.50.249
 
 [ansible]
 172.26.50.248
 
 [server]
-172.26.50.248
+172.26.50.250
+172.26.50.251
+172.26.50.252
 
 [etcd]
-172.26.50.248 etcdname=etcd01
-172.26.234.10 etcdname=etcd02
-172.26.50.247 etcdname=etcd03
+172.26.50.250 etcdname=etcd01
+172.26.50.251 etcdname=etcd02
+172.26.50.252 etcdname=etcd03
+
+[lb]
+172.26.50.248
 
 [new-node]
-172.26.50.248
 ```
+2. 
 
+### 使用说明
 如果需要安装所有的组件，那么你可以直接执行`ansible-play site.yaml`命令，不需要指定任何的tag。如果需要安装特定的组件或者运行特定的功能，那么需要指定具体的tag。例如`ansible-play site.yaml -t install_node`命令会在指定的机器安装node组件。
 
 ### 新增node机器
-新增node节点，需要在inventory文件中，将新机器的地址写入到`new-node`组中，然后执行`ansible-play new-node site.yaml -t install_node`命令即可
+新增node节点，需要在inventory文件中，将新机器的地址写入到`new-node`组中，然后执行`ansible-play new-node site.yaml -t install_node`命令，安装完成后删除inventory文件中`new-node`组中的机器并添加到`all`机器组中。
 
 
 ### 现有标签
@@ -55,4 +63,5 @@
 | install_scheduler | 安装scheduler |
 | install_node | 配置node节点包括kubelet，kube-proxy |
 | install_kubelet | 安装kubelet |
+| kubelet_config | 重置kubelet配置文件 |
 | install_kube_proxy | 安装kube-proxy |
