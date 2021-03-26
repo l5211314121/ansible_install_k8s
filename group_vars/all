@@ -1,17 +1,8 @@
+################################################ 软件包相关 ################################################
+# 1. 使用本地包还是通过网络下载
+# 2. 软件包的版本
 # 使用本地包，还是通过网络下载，如果通过网络下载需要将local修改为nonlocal
 env: local
-
-# 工作(安装)目录
-workdir: /opt
-
-# 是否启用CNI插件
-cni_mode: yes
-
-# ansible主控机机器证书存放位置
-cert_root_dir: /root/ssl
-
-# 所有机器上包的存放位置
-package_root_dir: /root/packages
 
 # go语言版本，env不是local时会下载
 # https://dl.google.com/go/go{{go_version}}.linux-amd64.tar.gz
@@ -34,25 +25,46 @@ docker_version: 19.03.11
 # docker 源地址，初始化机器的时候需要添加到yum源中
 docker_repo: http://mirrors.aliyun.com/docker-ce/linux/centos/docker-ce.repo
 
+# kubernetes 版本，env不为local时，会下载
+# https://dl.k8s.io/{{kubernetes_version}}/kubernetes-server-linux-amd64.tar.gz
+# 否则会上传本地files中的包
+kubernetes_version: v1.18.17
+
+
+################################################ 目录相关 ################################################
+# 工作(安装)目录
+workdir: /opt
+
+# ansible主控机机器证书存放位置
+cert_root_dir: /root/ssl
+
+# 所有机器上包的存放位置
+package_root_dir: /root/packages
+
+
+################################################ 网络相关 ################################################
+# 是否启用CNI插件
+cni_mode: yes
+
+# cni version
+cni_plugin_version: 0.8.5
+
 # flannel规划地址网段信息
 # flannel_network: '{"Network":"10.0.0.0/8", "Backend":{"Type": "vxlan"}}'
 flannel_network: 192.168.2.0/26
 flannel_backend: vxlan
 flannel_subnet: 10.0.51.1/24
 
-# kubernetes 版本，env不为local时，会下载
-# https://dl.k8s.io/{{kubernetes_version}}/kubernetes-server-linux-amd64.tar.gz
-# 否则会上传本地files中的包
-kubernetes_version: v1.18.17
+# service 网段
+service_cidr: 192.168.1.0/24
 
+
+################################################ 集群相关 ################################################
 # 可以通过 `head -c 16 /dev/urandom | od -An -t x | tr -d ' '`生成token
 apiserver_token: e023733c8d7aa0f1ab2403e877af9f63
 
 # api机器地址，用于生成证书使用 (弃用，现在通过ansible inventory file中的server获取)
 # apiserver_addr: '"172.26.50.248","47.92.148.31","172.26.234.10","172.26.50.247"'
-
-# service 网段
-service_cidr: 192.168.1.0/24
 
 # 如果是高可用集群，需要写vip，或者其中一个master的地址，用于生成kubeconfig
 apiserver_lb_addr: 172.26.50.248
@@ -60,9 +72,8 @@ apiserver_lb_addr: 172.26.50.248
 # service端口范围
 service_port_range: 30000-50000
 
-# cni version
-cni_plugin_version: 0.8.5
 
+################################################ ADDONS相关 ################################################
 # coredns 版本
 coredns_version: 1.14.0
 
