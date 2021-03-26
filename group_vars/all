@@ -58,6 +58,11 @@ flannel_subnet: 10.0.51.1/24
 # service 网段
 service_cidr: 10.10.0.0/16
 
+# kubernetes service的ip，默认是service_cidr网段中第一个地址
+# 这个是写入api的证书的， 在证书中默认是10.0.0.1，如果使用自定义的service的时候，这个是
+# kubernetes这个service的地址会改变，但是对应的证书中并没有这个地址，会报证书错误
+kube_service_ip: 10.10.0.1
+
 # coredns service的ip
 coredns_service_ip: 10.10.0.2
 

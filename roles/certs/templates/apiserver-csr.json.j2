@@ -3,6 +3,7 @@
     "hosts": [
         "10.0.0.1",
         "127.0.0.1",
+        "{{ kube_service_ip }}",
         {% for host in groups['server'] %}
             "{{ host }}"
             {% if not loop.last %},
