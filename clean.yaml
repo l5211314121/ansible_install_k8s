@@ -1,0 +1,36 @@
+- name: stop etcd
+  hosts: etcd
+  tasks:
+  - name: stop etcd
+    systemd:
+      name: "etcd"
+      state: stopped
+
+- hosts: server
+  name: stop server services
+  tasks:
+    - name: "stop server services"
+      systemd:
+        name: "{{ item }}"
+        state: stopped
+      with_list: ["kube-apiserver", "kube-controller-manager", "kube-scheduler"]
+
+- hosts: all
+  name: "stop node services"
+  tasks:
+    - name: "stop node services"
+      systemd:
+        name: "{{ item }}"
+        state: stopped
+      with_items: ["kubelet", "kube-proxy", "flanneld", "docker"]
+
+    - name: "clean directories"
+      file:
+        path: "{{ item }}"
+        state: absent
+      with_items: ["/opt/kubernetes", "/opt/etcd", "/root/ssl/", "/var/run/flannel", "/var/lib/etcd"]
+
+    - name: "clean network interface"
+      shell: |
+        ip link set dev cni0 down; ip line set dev docker0 down
+        ip link delete cni0; ip link delete docker0
