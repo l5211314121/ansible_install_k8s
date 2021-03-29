@@ -51,7 +51,7 @@
 
 
 ### 新增node机器
-新增node节点，需要在inventory文件中，将新机器的地址写入到`new-node`组中，然后执行`ansible-play new-node site.yaml -t install_node`命令，安装完成后删除inventory文件中`new-node`组中的机器并添加到`all`机器组中。
+新增node节点，需要在inventory文件中，将新机器的地址写入到`new-node`组中，然后执行`ansible-playbook site.yml -t install_node -l new-node`命令，安装完成后删除inventory文件中`new-node`组中的机器并添加到`all`机器组中。
 
 
 ### 现有标签

@@ -2,37 +2,37 @@
   yum:
     name: ["docker", "docker-client", "docker-client-latest", "docker-common", "docker-latest", "docker-latest-logrotate", "docker-logrotate", "docker-engine"]
     state: absent
-  tags: install_node
+  tags: install_node, new_node
 
 - name: "Add Docker repository"
   shell:
     yum-config-manager --add-repo {{docker_repo}}
-  tags: install_node
+  tags: install_node, new_node
 
 - name: yum-clean-metadata
   command: yum clean metadata
   args:
     warn: no
-  tags: install_node
+  tags: install_node, new_node
 
 - name: Install Docker
   yum:
     name: "docker-ce-{{docker_version}}"
     state: present
-  tags: install_node
+  tags: install_node, new_node
 
 - name: "DownLoad Kubernetes Tarball"
   get_url:
     url: "https://dl.k8s.io/{{kubernetes_version}}/kubernetes-server-linux-amd64.tar.gz"
     dest: "{{package_root_dir}}"
-  tags: install_node
+  tags: install_node, new_node
   when: env != 'local'
 
 - name: "Distribute Kubernetes Tarball"
   copy:
     src: "kubernetes-server-linux-amd64.tar.gz"
     dest: "{{package_root_dir}}"
-  tags: install_node
+  tags: install_node, new_node
   when: env == 'local'
 
 - name: "Unarchive Kubernetes Tarball"
@@ -41,7 +41,7 @@
     dest: "{{package_root_dir}}"
     remote_src: true
     keep_newer: true
-  tags: install_node
+  tags: install_node, new_node
 
 - name: "Distribute Bin File"
   copy:
@@ -49,7 +49,7 @@
     dest: /usr/local/bin
     mode: 0755
   with_items: ["kubectl", "kube-proxy", "kubelet"]
-  tags: install_node
+  tags: install_node, new_node
 
 - name: "Distrubute CA File"
   copy:
@@ -57,14 +57,14 @@
     dest: "{{workdir}}/kubernetes/ssl/"
     force: true
   with_items: ["ca.pem", "ca-key.pem"]
-  tags: install_node
+  tags: install_node, new_node
 
 - name: "Distrubute Kube-proxy Certs"
   copy:
     src: "{{cert_root_dir}}/kubernetes/kube-proxy/{{item}}"
     dest: "{{workdir}}/kubernetes/ssl/kube-proxy/"
   with_items: ["kube-proxy.pem", "kube-proxy-key.pem"]
-  tags: install_node
+  tags: install_node, new_node
 
 - name: "Generate bootstrap.kubeconfig"
   shell: |
@@ -74,7 +74,7 @@
     kubectl  config use-context default --kubeconfig=bootstrap.kubeconfig
   args:
     chdir: "{{workdir}}/kubernetes/cfg/"
-  tags: install_node
+  tags: install_node, new_node
 
 - name: "Generate kube-proxy.kubeconfig"
   shell: |
@@ -84,46 +84,46 @@
     kubectl config use-context default --kubeconfig=kube-proxy.kubeconfig
   args:
     chdir: "{{workdir}}/kubernetes/cfg/"
-  tags: install_node
+  tags: install_node, new_node
 
 - name: "Distribute Kubelet Environment File"
   template:
     src: kubelet.j2
     dest: "{{workdir}}/kubernetes/cfg/kubelet"
-  tags: install_node, install_kubelet, kubelet_config
+  tags: install_node, install_kubelet, kubelet_config, new_node
 
 - name: "Distribute Kubelet Configuration File"
   template:
     src: kubelet.config.j2
     dest: "{{workdir}}/kubernetes/cfg/kubelet.config"
     force: true
-  tags: install_node, install_kubelet, kubelet_config
+  tags: install_node, install_kubelet, kubelet_config, new_node
 
 - name: "Make Cni Directories"
   shell:
     mkdir -p /opt/cni/{bin,net.d}
     mkdir -p /run/flannel
-  tags: install_node, install_kubelet
+  tags: install_node, install_kubelet, new_node
 
 - name: "Distribute Flannel Subnet.env"
   template:
     src: subnet.env.j2
     dest: /run/flannel/subnet.env
-  tags: install_node, install_kubelet
+  tags: install_node, install_kubelet, new_node
   when: cni_mode == "yes"
 
 - name: "Download cni_plugin"
   get_url:
     url: "https://github.com/containernetworking/plugins/releases/download/v{{cni_plugin_version}}/cni-plugins-linux-amd64-v{{cni_plugin_version}}.tgz"
     dest: "{{package_root_dir}}"
-  tags: install_node, install_kubelet
+  tags: install_node, install_kubelet, new_node
   when: env != 'local'
 
 - name: "Distribute cni_plugin"
   copy:
     src: "cni-plugins-linux-amd64-v{{cni_plugin_version}}.tgz"
     dest: "{{package_root_dir}}"
-  tags: install_node, install_kubelet
+  tags: install_node, install_kubelet, new_node
   when: env == 'local'
 
 - name: "Unarchive cni_plugin"
@@ -131,19 +131,19 @@
     src: "{{package_root_dir}}/cni-plugins-linux-amd64-v{{cni_plugin_version}}.tgz"
     dest: /opt/cni/bin
     remote_src: true
-  tags: install_node, install_kubelet
+  tags: install_node, install_kubelet, new_node
 
 - name: "Distribute Cni Configruation Files"
   template:
     src: 10-flannel.conflist.j2
     dest: /opt/cni/net.d/10-flannel.conflist
-  tags: install_node, install_kubelet
+  tags: install_node, install_kubelet, new_node
 
 - name: "Distribute Start Script"
   template:
     src: kubelet.service.j2
     dest: /usr/lib/systemd/system/kubelet.service
-  tags: install_node, install_kubelet
+  tags: install_node, install_kubelet, new_node
 
 - name: "Restart Kubelet"
   systemd:
@@ -151,4 +151,4 @@
     enabled: true
     daemon_reload: true
     state: restarted
-  tags: install_node, install_kubelet, restart_kubelet
+  tags: install_node, install_kubelet, restart_kubelet, new_node

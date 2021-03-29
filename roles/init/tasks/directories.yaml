@@ -12,7 +12,7 @@
     - ssl/kube-proxy
     - ssl/kube-scheduler
     - ssl/kube-controller-manager
-  tags: init, mkdir
+  tags: init, mkdir, new_node
 
 - name: "Make ETCD Base Directory"
   file:
@@ -22,17 +22,17 @@
   with_items:
     - cfg
     - ssl
-  tags: init, mkdir
+  tags: init, mkdir, new_node
 
 - name: "Make Packages Base Directory"
   file:
     name: "{{ package_root_dir }}"
     state: directory
     recurse: true
-  tags: init, mkdir
+  tags: init, mkdir, new_node
 
 - name: "Make Flannel Directory"
   file:
     name: "{{ package_root_dir }}/flannel"
     state: directory
-  tags: init, mkdir
+  tags: init, mkdir, new_node
