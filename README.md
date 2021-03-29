@@ -1,39 +1,54 @@
 ### 使用方法
-1. 准备一个`inventory file`，文件中写明各个组件对应的地址，etcd的地址后需要添加一个etcdname用来标识etcd，下面是一个示例：
-```
-[all]
-172.26.50.248
-172.26.50.249
-172.26.50.250
-172.26.50.251
-172.26.50.252
+1. 准备一个`inventory file`，文件中写明各个组件对应的地址，etcd的地址后需要添加一个etcdname用来标识etcd
+2. 修改group_vars/all文件中的配置参数
+3. 如果使用本地安装包，请将各个组件的包放置于对应的目录下
+4.  安装全部组件使用 `ansible-play site.yaml`命令
+5.  如果运行指定步骤使用`ansible-play site.yaml -t {{ tags }}`命令
 
-[node]
-172.26.50.248
-172.26.50.249
+> inventory file示例
+>```
+>[all]
+>172.26.50.248
+>172.26.50.249
+>172.26.50.250
+>172.26.50.251
+>172.26.50.252
+>
+>[node]
+>172.26.50.248
+>172.26.50.249
+>
+>[ansible]
+>172.26.50.248
+>
+>[server]
+>172.26.50.250
+>172.26.50.251
+>172.26.50.252
+>
+>[etcd]
+>172.26.50.250 etcdname=etcd01
+>172.26.50.251 etcdname=etcd02
+>172.26.50.252 etcdname=etcd03
+>
+>[lb]
+>172.26.50.248
+>
+>[new-node]
+>```
 
-[ansible]
-172.26.50.248
 
-[server]
-172.26.50.250
-172.26.50.251
-172.26.50.252
+### 安装包对应目录说明
+| 包名 | 目录 |
+| --- | --- |
+| deployment-master.zip（coredns）| roles/addons/files |
+| etcd-v`$VERSION`-linux-amd64.tar.gz | roles/etcd/files |
+| flannel-v`$VERSION`-linux-amd64.tar.gz | roles/flannel/files |
+| go`$VERSION`.linux-amd64.tar.gz | roles/init_ansible/files |
+| cni-plugins-linux-amd64-v`$VERSION`.tgz | roles/node/files |
+| kubernetes-server-linux-amd64.tar.gz | roles/node/files |
+| kubernetes-server-linux-amd64.tar.gz | roles/server/files |
 
-[etcd]
-172.26.50.250 etcdname=etcd01
-172.26.50.251 etcdname=etcd02
-172.26.50.252 etcdname=etcd03
-
-[lb]
-172.26.50.248
-
-[new-node]
-```
-2. 
-
-### 使用说明
-如果需要安装所有的组件，那么你可以直接执行`ansible-play site.yaml`命令，不需要指定任何的tag。如果需要安装特定的组件或者运行特定的功能，那么需要指定具体的tag。例如`ansible-play site.yaml -t install_node`命令会在指定的机器安装node组件。
 
 ### 新增node机器
 新增node节点，需要在inventory文件中，将新机器的地址写入到`new-node`组中，然后执行`ansible-play new-node site.yaml -t install_node`命令，安装完成后删除inventory文件中`new-node`组中的机器并添加到`all`机器组中。
