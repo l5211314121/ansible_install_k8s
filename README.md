@@ -80,3 +80,4 @@
 | install_kubelet | 安装kubelet |
 | kubelet_config | 重置kubelet配置文件 |
 | install_kube_proxy | 安装kube-proxy |
+| new_node | 新增node |
