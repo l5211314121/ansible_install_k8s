@@ -50,7 +50,7 @@
 - name: install nginx
   hosts: lb
   roles:
-    - nginx
+    - { role: nginx, when: cluster_ha == "yes" }
 
 # 增加一个新节点
 - name: add new node

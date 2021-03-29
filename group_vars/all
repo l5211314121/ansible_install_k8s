@@ -68,6 +68,9 @@ coredns_service_ip: 10.10.0.2
 
 
 ################################################ 集群相关 ################################################
+# 是否开启高可用集群
+cluster_ha: yes
+
 # 可以通过 `head -c 16 /dev/urandom | od -An -t x | tr -d ' '`生成token
 apiserver_token: e023733c8d7aa0f1ab2403e877af9f63
 
@@ -75,6 +78,7 @@ apiserver_token: e023733c8d7aa0f1ab2403e877af9f63
 # apiserver_addr: '"172.26.50.248","47.92.148.31","172.26.234.10","172.26.50.247"'
 
 # 如果是高可用集群，需要写vip，或者其中一个master的地址，用于生成kubeconfig
+# 如果非高可用集群，会忽略这个参数
 apiserver_lb_addr: 172.26.50.248
 
 # service端口范围
