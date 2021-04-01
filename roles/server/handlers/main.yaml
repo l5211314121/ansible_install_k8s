@@ -1,0 +1,4 @@
+- name: Restart ApiServer
+  systemd:
+    name: kube-apiserver
+    state: restarted

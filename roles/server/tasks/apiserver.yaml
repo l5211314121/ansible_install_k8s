@@ -26,21 +26,23 @@
     dest: "{{workdir}}/kubernetes/ssl/"
     force: true
   with_items: ["ca.pem", "ca-key.pem"]
-  tags: install_server, install_apiserver
+  tags: install_server, install_apiserver, apiserver_certs
 
 - name: "Distrubute Api-server Certs"
   copy:
     src: "{{cert_root_dir}}/kubernetes/kube-apiserver/{{item}}"
     dest: "{{workdir}}/kubernetes/ssl/kube-apiserver/"
   with_items: ["apiserver.pem", "apiserver-key.pem", "metrics-server.pem", "metrics-server-key.pem"]
-  tags: install_server, install_apiserver
+  tags: install_server, install_apiserver, apiserver_certs
+  notify:
+    - Restart ApiServer
 
 - name: "Distrubute admin Certs"
   copy:
     src: "{{cert_root_dir}}/kubernetes/admin/{{item}}"
     dest: "{{workdir}}/kubernetes/ssl/admin/"
   with_items: ["admin.pem", "admin-key.pem"]
-  tags: install_server, install_apiserver
+  tags: install_server, install_apiserver, apiserver_certs
 
 - name: "Distrubute Kube-apiserver Bin File"
   copy:
@@ -96,7 +98,7 @@
     kubectl config use-context kubernetes
   args:
     chdir: "{{workdir}}/kubernetes/cfg"
-  tags: install_server, install_apiserver
+  tags: install_server, install_apiserver, apiserver_certs
 
 - name: "Add Kubelet-bootstrap RoleBinding"
   shell: |

@@ -8,12 +8,10 @@
             "{{ host }}"
             {% if not loop.last %},
         {% endif %}{% endfor %},
-        {% if cluster_ha == "yes" %}
-            {% if apiserver_lb_addr %}
-                {% for addr in apiserver_lb_addr.split(',') %}
-                    "{{ addr }}",
-                {% endfor %}
-            {% endif %}
+        {% if apiserver_lb_addr %}
+            {% for addr in apiserver_lb_addr.split(',') %}
+                "{{ addr }}",
+            {% endfor %}
         {% endif %}
         "kubernetes",
         "kubernetes.default",
