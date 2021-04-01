@@ -1,3 +1,5 @@
+### 功能
+通过ansible一键安装k8s，单master集群，多master集群可以通过配置文件中的`cluster_ha`变量控制
 ### 使用方法
 1. 准备一个`inventory file`，文件中写明各个组件对应的地址，etcd的地址后需要添加一个etcdname用来标识etcd
 2. 修改group_vars/all文件中的配置参数

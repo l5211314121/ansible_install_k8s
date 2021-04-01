@@ -1,0 +1,12 @@
+- name: Distribute Template File
+  template:
+    src: metrics-server.yaml.j2
+    dest: "{{ package_root_dir }}/kubernetes/addons/metrics-server.yaml"
+  tags: install_metrics_server
+
+- name: Install Metrics Server
+  shell: |
+    kubectl apply -f metrics-server.yaml
+  args:
+    chdir: "{{ package_root_dir }}/kubernetes/addons/"
+  tags: install_metrics_server
