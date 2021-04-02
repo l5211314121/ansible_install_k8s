@@ -1,0 +1,12 @@
+- name: Distribute Template File
+  template:
+    src: ingerss-nginx.yaml.j2
+    dest: "{{ package_root_dir }}/kubernetes/addons/ingress-nginx.yaml"
+  tags: install_ingress
+
+- name: Install Ingress
+  shell: |
+    kubectl apply -f ingress-nginx.yaml
+  args:
+    chdir: "{{ package_root_dir }}/kubernetes/addons/"
+  tags: install_ingress
