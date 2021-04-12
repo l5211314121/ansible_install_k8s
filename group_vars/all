@@ -51,20 +51,23 @@ cni_plugin_version: 0.8.5
 
 # flannel规划地址网段信息
 # flannel_network: '{"Network":"10.0.0.0/8", "Backend":{"Type": "vxlan"}}'
-flannel_network: 10.245.0.0/16
+flannel_network: 10.0.0.0/8
 flannel_backend: vxlan
 flannel_subnet: 10.0.51.1/24
 
 # service 网段
-service_cidr: 10.10.0.0/16
+service_cidr: 192.168.0.0/17
+
+# pod 网段
+pod_cidr: 192.168.128.0/17
 
 # kubernetes service的ip，默认是service_cidr网段中第一个地址
 # 这个是写入api的证书的， 在证书中默认是10.0.0.1，如果使用自定义的service的时候，这个是
 # kubernetes这个service的地址会改变，但是对应的证书中并没有这个地址，会报证书错误
-kube_service_ip: 10.10.0.1
+kube_service_ip: 192.168.0.1
 
 # coredns service的ip
-coredns_service_ip: 10.10.0.2
+coredns_service_ip: 192.168.1.10
 
 
 ################################################ 集群相关 ################################################

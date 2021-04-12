@@ -16,6 +16,13 @@
       with_list: ["kube-apiserver", "kube-controller-manager", "kube-scheduler"]
 
 - hosts: all
+  name: delete containers
+  tasks:
+    - name: delete all containers
+      shell: |
+        docker ps -a  | awk 'NR>1{print $1}' | xargs -i docker rm -f {}
+
+- hosts: all
   name: "stop node services"
   tasks:
     - name: "stop node services"
@@ -32,5 +39,6 @@
 
     - name: "clean network interface"
       shell: |
-        ip link set dev cni0 down; ip line set dev docker0 down
-        ip link delete cni0; ip link delete docker0
+        ip link set dev cni0 down; ip link set dev docker0 down; ip link set flannel.1 down
+        ip link delete cni0; ip link delete docker0; ip link delete flannel.1
+      ignore_errors: yes

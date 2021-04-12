@@ -90,6 +90,7 @@
   template:
     src: kubelet.j2
     dest: "{{workdir}}/kubernetes/cfg/kubelet"
+    force: true
   tags: install_node, install_kubelet, kubelet_config, new_node
 
 - name: "Distribute Kubelet Configuration File"

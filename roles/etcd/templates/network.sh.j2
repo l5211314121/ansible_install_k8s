@@ -1,4 +1,4 @@
 #!/bin/bash
 ETCDCTL_API=2 etcdctl --ca-file={{workdir}}/etcd/ssl/ca.pem \
 --cert-file={{workdir}}/etcd/ssl/etcd.pem --key-file={{workdir}}/etcd/ssl/etcd-key.pem \
---endpoints={% for host in groups['etcd'] %}https://{{ host }}:2379{% if not loop.last %},{% endif %}{% endfor %} set /coreos.com/network/config '{"Network":"{{flannel_network}}", "Backend":{"Type": "{{flannel_backend}}"}}'
+--endpoints={% for host in groups['etcd'] %}https://{{ host }}:2379{% if not loop.last %},{% endif %}{% endfor %} set /coreos.com/network/config '{"Network":"{{pod_cidr}}", "Backend":{"Type": "{{flannel_backend}}"}}'

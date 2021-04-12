@@ -38,7 +38,7 @@
 - name: install flannel
   hosts: all
   roles:
-    - {role: flannel, when: cni_mode != "yes"}
+    - flannel
 
 # 安装addons
 - name: install addons

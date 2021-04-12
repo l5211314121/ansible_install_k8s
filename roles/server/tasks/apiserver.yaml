@@ -74,7 +74,7 @@
     src: kube-apiserver.j2
     dest: "{{workdir}}/kubernetes/cfg/kube-apiserver"
     force: true
-  tags: install_server, install_apiserver
+  tags: install_server, install_apiserver, apiserver_config
 
 - name: "Distribute Apiserver Start Script"
   template:
